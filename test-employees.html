@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Employees API</title>
+<style>
+body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem; }
+button { padding: 10px 16px; }
+pre { background:#f4f4f4; padding:1rem; border:1px solid #ddd; overflow:auto; }
+</style>
+</head>
+<body>
+<h1>Employee API Test</h1>
+<button id="loadBtn">Load Employees</button>
+<pre id="output">Click the button...</pre>
+<script>
+const API_URL = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api/employees';
+
+document.getElementById('loadBtn').addEventListener('click', async () => {
+  const output = document.getElementById('output');
+  output.textContent = 'Loading...';
+
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    output.textContent = 'Error: ' + err.message;
+  }
+});
+</script>
+</body>
+</html>
