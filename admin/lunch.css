@@ -115,3 +115,12 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 
 /* V23.1 direct dish reordering */
 .builder-heading-actions{display:flex;gap:8px}.scheduled-dish{grid-template-columns:28px minmax(0,1fr) 34px;transition:opacity .12s,transform .12s,box-shadow .12s}.scheduled-dish.dragging{opacity:.35}.scheduled-grip{color:#8c99a2;font-size:18px;letter-spacing:-5px;cursor:grab}.scheduled-dish.drop-before{box-shadow:0 -4px 0 var(--brand)}.scheduled-dish.drop-after{box-shadow:0 4px 0 var(--brand)}.scheduled-dish>.remove-scheduled{width:30px;height:30px;padding:0;border:0;border-radius:7px;color:var(--danger);background:var(--danger-soft);font-size:18px;cursor:pointer}@media(max-width:650px){.builder-heading-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.builder-heading-actions .secondary-button{width:100%}}
+
+/* Optional employee admin additions for lunch.css */
+.employee-list-filters{display:flex;align-items:center;gap:8px}
+.employee-list-filters select{height:38px;padding:0 10px;border:1px solid #b8c2c9;border-radius:8px;background:#fff}
+.employee-table tr.inactive{opacity:.62;background:#f6f7f8}
+.employee-table .muted-value{color:var(--muted)}
+.employee-table a{color:var(--brand-dark)}
+.employee-dialog-active{margin-top:14px;width:max-content}
+@media(max-width:650px){.employee-list-filters{align-items:stretch;flex-direction:column}.employee-list-filters select,.employee-list-filters input{width:100%}}
