@@ -1,5 +1,4 @@
 const API_BASE = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api';
-const ROTATION_ANCHOR = new Date(2026, 8, 28);
 const USER_KEY = 'lunch-poc-current-user-v17';
 const LANGUAGE_KEY = 'lunch-poc-language-v5';
 
@@ -9,8 +8,8 @@ if (!currentUser?.employeeNumber) location.replace('login.html');
 
 const isGuest = document.body.dataset.orderType === 'guest';
 let language = localStorage.getItem(LANGUAGE_KEY) || 'en';
-let rotationWeeks = new Map();
-let rotationLength = 0;
+let menuWeeksByMonday = new Map();
+let menuCycleNames = new Set();
 let menuData = [];
 let savedOrders = {};
 let workingOrders = {};
@@ -61,10 +60,9 @@ function taskValid(){return !isGuest||Boolean(workTask.value.trim());}
 
 async function apiFetch(path,options={}){const response=await fetch(`${API_BASE}${path}`,{...options,headers:{Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});const type=response.headers.get('content-type')||'';const payload=type.includes('application/json')?await response.json():await response.text();if(!response.ok)throw new Error(payload?.details||payload?.error||payload||`HTTP ${response.status}`);return payload;}
 
-async function loadRotation(){const results=await Promise.all(Array.from({length:8},async(_,i)=>{try{return await apiFetch(`/menu/week/${i+1}`);}catch(e){if(String(e.message).includes('does not exist'))return null;throw e;}}));const weeks=results.filter(Boolean).sort((a,b)=>a.weekNumber-b.weekNumber);if(!weeks.length)throw new Error('No rotating menu weeks exist');rotationLength=weeks.length;rotationWeeks=new Map(weeks.map(w=>[w.weekNumber,w]));}
-function rotationWeek(date){const elapsed=Math.floor((mondayOf(date)-ROTATION_ANCHOR)/604800000);return((elapsed%rotationLength)+rotationLength)%rotationLength+1;}
-function mealName(m){if(language==='sv')return m.nameSV||m.nameEN||m.nameFI||'';if(language==='fi')return m.nameFI||m.nameSV||m.nameEN||'';return m.nameEN||m.nameSV||m.nameFI||'';}
-function buildMenu(){const today=effectiveToday();return shownDates().map(date=>{const dayNo=((date.getDay()+6)%7)+1;const apiDay=rotationWeeks.get(rotationWeek(date))?.days?.find(d=>d.dayNumber===dayNo);return{id:dateKey(date),day:names.days[dayNo-1][language],date:`${String(date.getDate()).padStart(2,'0')}.${String(date.getMonth()+1).padStart(2,'0')}`,note:dateKey(date)===dateKey(today)?ui[language].today:'',meals:(apiDay?.meals||[]).map(m=>({mealId:Number(m.mealId),name:mealName(m),category:names.categories[m.category]?.[language]||m.category||''})).filter(m=>m.name&&Number.isInteger(m.mealId))};});}
+async function loadMenusForShownDates(){const mondayKeys=[...new Set(shownDates().map(date=>dateKey(mondayOf(date))))];const results=await Promise.all(mondayKeys.map(async mondayKey=>[mondayKey,await apiFetch(`/menu/current?date=${encodeURIComponent(mondayKey)}`)]));menuWeeksByMonday=new Map(results);menuCycleNames=new Set(results.map(([,menu])=>menu.cycleName).filter(Boolean));}
+function mealName(m){return language==='fi'?(m.nameFI||m.nameSV||m.nameEN):language==='sv'?(m.nameSV||m.nameEN||m.nameFI):(m.nameEN||m.nameSV||m.nameFI);}
+function buildMenu(){const today=effectiveToday();return shownDates().map(date=>{const dayNo=((date.getDay()+6)%7)+1;const apiWeek=menuWeeksByMonday.get(dateKey(mondayOf(date)));const apiDay=apiWeek?.days?.find(d=>d.dayNumber===dayNo);return{id:dateKey(date),day:names.days[dayNo-1][language],date:`${String(date.getDate()).padStart(2,'0')}.${String(date.getMonth()+1).padStart(2,'0')}`,note:dateKey(date)===dateKey(today)?ui[language].today:'',meals:(apiDay?.meals||[]).map(m=>({mealId:Number(m.mealId),name:mealName(m),category:names.categories[m.category]?.[language]||m.category||''})).filter(m=>m.name&&Number.isInteger(m.mealId))};});}
 
 function fromApi(payload){const result={};for(const o of payload.orders||[])result[orderKey(o.menuDate,Number(o.mealId))]=Number(o.quantity)||0;return result;}
 function orderLines(){const allowed=new Set(menuData.flatMap(day=>day.meals.map(meal=>orderKey(day.id,meal.mealId))));return Object.entries(workingOrders).filter(([k,v])=>allowed.has(k)&&Number(v)>0).map(([k,v])=>{const i=k.lastIndexOf(':');return{menuDate:k.slice(0,i),mealId:Number(k.slice(i+1)),quantity:Number(v),...(isGuest?{workTask:workTask.value.trim()}:{})};});}
@@ -89,5 +87,5 @@ const languageSelect=document.querySelector('#languageSelect');languageSelect.va
 const simulateFriday=document.querySelector('#simulateFriday');simulateFriday.addEventListener('change',reload);
 window.addEventListener('beforeunload',e=>{if(!dirty)return;e.preventDefault();e.returnValue='';});
 
-async function reload(){ready=false;applyText();render();try{if(!rotationLength)await loadRotation();menuData=buildMenu();await loadOrders();ready=true;dirty=false;applyText();render();}catch(e){console.error(e);weekElement.innerHTML=`<div class="empty-state"><strong>${escapeHtml(ui[language].loadFailed)}</strong><span>${escapeHtml(e.message)}</span></div>`;if(menuSource)menuSource.textContent=`API error: ${e.message}`;showToast(ui[language].loadFailed);}}
+async function reload(){ready=false;applyText();render();try{await loadMenusForShownDates();menuData=buildMenu();await loadOrders();ready=true;dirty=false;applyText();render();}catch(e){console.error(e);weekElement.innerHTML=`<div class="empty-state"><strong>${escapeHtml(ui[language].loadFailed)}</strong><span>${escapeHtml(e.message)}</span></div>`;if(menuSource)menuSource.textContent=`API error: ${e.message}`;showToast(ui[language].loadFailed);}}
 reload();
