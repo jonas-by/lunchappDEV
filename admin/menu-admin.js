@@ -5,6 +5,8 @@ const TYPES = ['all', 'main', 'vegetarian', 'soup', 'salad', 'dessert'];
 
 let library = [];
 let cfg = { repeatWeeks: 0, weeks: [] };
+let cycles = [];
+let selectedCycleId = null;
 let active = 0;
 let filter = 'all';
 let selected = null;
@@ -12,6 +14,12 @@ let timer;
 let dragSource = null;
 
 const repeat = document.querySelector('#repeatWeeks');
+const cycleSelect = document.querySelector('#cycleSelect');
+const cycleDetails = document.querySelector('#cycleDetails');
+const newCycle = document.querySelector('#newCycle');
+const cycleDialog = document.querySelector('#cycleDialog');
+const cycleForm = document.querySelector('#cycleForm');
+const cycleFormError = document.querySelector('#cycleFormError');
 const tabs = document.querySelector('#weekTabs');
 const items = document.querySelector('#libraryItems');
 const search = document.querySelector('#librarySearch');
@@ -110,38 +118,36 @@ async function loadLibrary() {
         .filter(meal => Number.isInteger(meal.mealId));
 }
 
-async function loadMenuWeeks() {
-    const results = await Promise.all(
-        Array.from({ length: 8 }, async (_, index) => {
-            const weekNumber = index + 1;
+async function loadCycles() {
+    cycles = await apiFetch('/menu/cycles');
+    if (!Array.isArray(cycles) || cycles.length === 0) throw new Error('No menu cycles exist in the database');
 
-            try {
-                return await apiFetch(`/menu/week/${weekNumber}`);
-            } catch (error) {
-                if (String(error.message).includes('does not exist')) {
-                    return null;
-                }
-                throw error;
-            }
-        })
-    );
-
-    const existing = results.filter(Boolean);
-
-    if (existing.length === 0) {
-        throw new Error('No menu weeks exist in the database');
+    if (!cycles.some(cycle => cycle.menuCycleId === selectedCycleId)) {
+        const preferred = cycles.find(cycle => cycle.status === 'Published') || cycles[0];
+        selectedCycleId = preferred.menuCycleId;
     }
 
-    cfg.repeatWeeks = existing.length;
-    cfg.weeks = existing.map(apiWeek => ({
+    cycleSelect.innerHTML = cycles.map(cycle => `
+        <option value="${cycle.menuCycleId}">${esc(cycle.name)} (${t(cycle.status)})</option>
+    `).join('');
+    cycleSelect.value = String(selectedCycleId);
+}
+
+async function loadMenuWeeks() {
+    const cycle = cycles.find(item => item.menuCycleId === selectedCycleId);
+    if (!cycle) throw new Error('Selected menu cycle does not exist');
+
+    const results = await Promise.all(
+        Array.from({ length: cycle.numberOfWeeks }, (_, index) =>
+            apiFetch(`/menu/cycles/${selectedCycleId}/weeks/${index + 1}`)
+        )
+    );
+
+    cfg.repeatWeeks = cycle.numberOfWeeks;
+    cfg.weeks = results.map(apiWeek => ({
         days: DAYS.map((day, index) => {
             const apiDay = apiWeek.days.find(item => item.dayNumber === index + 1);
-
-            return {
-                day,
-                dayNumber: index + 1,
-                mealIds: (apiDay?.meals || []).map(meal => Number(meal.mealId))
-            };
+            return { day, dayNumber: index + 1, mealIds: (apiDay?.meals || []).map(meal => Number(meal.mealId)) };
         })
     }));
 
@@ -156,7 +162,11 @@ function renderTabs() {
     `).join('');
 
     editingWeek.textContent = `${t('Week')} ${active + 1}`;
-    cycleTitle.textContent = `${cfg.repeatWeeks}-${t('week menu')}`;
+    const cycle = cycles.find(item => item.menuCycleId === selectedCycleId);
+    cycleTitle.textContent = cycle?.name || `${cfg.repeatWeeks}-${t('week menu')}`;
+    cycleDetails.textContent = cycle
+        ? `${cycle.startDate} · ${cycle.numberOfWeeks} ${t('weeks')} · ${t(cycle.status)}`
+        : '';
 }
 
 function renderLibrary() {
@@ -290,13 +300,13 @@ async function saveAllWeeks() {
                 }))
             };
 
-            await apiFetch(`/menu/week/${index + 1}`, {
+            await apiFetch(`/menu/cycles/${selectedCycleId}/weeks/${index + 1}`, {
                 method: 'PUT',
                 body: JSON.stringify(payload)
             });
         }
 
-        menuStatus.textContent = `Saved ${cfg.repeatWeeks}-week rotating menu to Azure.`;
+        menuStatus.textContent = `Saved ${cycles.find(c => c.menuCycleId === selectedCycleId)?.name || 'menu cycle'} to Azure.`;
         show('Menu saved');
     } catch (error) {
         console.error(error);
@@ -311,7 +321,8 @@ async function initialise() {
     saveMenu.disabled = true;
 
     try {
-        await Promise.all([loadLibrary(), loadMenuWeeks()]);
+        await Promise.all([loadLibrary(), loadCycles()]);
+        await loadMenuWeeks();
         active = 0;
         render();
         menuStatus.textContent = `Loaded ${library.length} dishes and ${cfg.repeatWeeks} menu weeks from Azure.`;
@@ -324,6 +335,66 @@ async function initialise() {
         saveMenu.disabled = false;
     }
 }
+
+cycleSelect.addEventListener('change', async () => {
+    selectedCycleId = Number(cycleSelect.value);
+    active = 0;
+    selected = null;
+    saveMenu.disabled = true;
+    try {
+        await loadMenuWeeks();
+        render();
+        menuStatus.textContent = `Loaded ${cycles.find(c => c.menuCycleId === selectedCycleId)?.name}.`;
+    } catch (error) {
+        console.error(error);
+        show(`Load failed: ${error.message}`);
+    } finally {
+        saveMenu.disabled = false;
+    }
+});
+
+newCycle.addEventListener('click', () => {
+    cycleForm.reset();
+    document.querySelector('#cycleWeeks').value = '4';
+    cycleFormError.hidden = true;
+    cycleDialog.showModal();
+    document.querySelector('#cycleName').focus();
+});
+
+document.querySelector('#cancelCycle').addEventListener('click', () => cycleDialog.close());
+document.querySelector('#closeCycleDialog').addEventListener('click', () => cycleDialog.close());
+
+cycleForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    cycleFormError.hidden = true;
+    const button = document.querySelector('#createCycle');
+    button.disabled = true;
+
+    try {
+        const created = await apiFetch('/menu/cycles', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: document.querySelector('#cycleName').value.trim(),
+                startDate: document.querySelector('#cycleStartDate').value,
+                numberOfWeeks: Number(document.querySelector('#cycleWeeks').value),
+                status: 'Draft'
+            })
+        });
+        selectedCycleId = created.menuCycleId;
+        await loadCycles();
+        await loadMenuWeeks();
+        active = 0;
+        cycleDialog.close();
+        render();
+        show('Menu cycle created');
+    } catch (error) {
+        console.error(error);
+        cycleFormError.textContent = error.message;
+        cycleFormError.hidden = false;
+    } finally {
+        button.disabled = false;
+    }
+});
 
 tabs.addEventListener('click', event => {
     const button = event.target.closest('[data-week]');

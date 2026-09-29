@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="lunch.css">
     <script src="admin-i18n.js" defer></script>
     <script src="menu-admin.js" defer></script>
+    <style>
+        .cycle-controls { display:flex; gap:12px; align-items:end; flex-wrap:wrap; }
+        .cycle-controls label { min-width:180px; }
+        #cycleDialog form { min-width:min(420px, calc(100vw - 48px)); }
+        #cycleDialog label { display:grid; gap:6px; margin:12px 0; }
+        #cycleFormError { color:#991b1b; background:#fef2f2; border:1px solid #dc2626; border-radius:8px; padding:10px 12px; margin:12px 0; }
+        #cycleFormError[hidden] { display:none; }
+    </style>
 </head>
 <body>
 <div class="app-shell admin-shell">
@@ -25,21 +33,22 @@
             <div>
                 <span class="eyebrow">Menu cycle</span>
                 <h2 id="cycleTitle">Loading menu...</h2>
-                <p>The menu starts again after the last week.</p>
+                <p id="cycleDetails">The menu starts again after the last week.</p>
             </div>
-            <label>
-                Number of weeks
-                <select id="repeatWeeks" disabled>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                </select>
-            </label>
+            <div class="cycle-controls">
+                <label>
+                    Select cycle
+                    <select id="cycleSelect"></select>
+                </label>
+                <label>
+                    Number of weeks
+                    <select id="repeatWeeks" disabled>
+                        <option>1</option><option>2</option><option>3</option><option>4</option>
+                        <option>5</option><option>6</option><option>7</option><option>8</option>
+                    </select>
+                </label>
+                <button id="newCycle" class="secondary-button" type="button">New cycle</button>
+            </div>
         </section>
 
         <section class="menu-builder-note">
@@ -81,6 +90,29 @@
 
         <p class="poc-note" id="menuStatus">Loading meals and menu from Azure...</p>
     </main>
+
+
+    <dialog id="cycleDialog">
+        <form id="cycleForm">
+            <div class="dialog-heading">
+                <h2>Create menu cycle</h2>
+                <button id="closeCycleDialog" type="button" aria-label="Close">×</button>
+            </div>
+            <label>Cycle name<input id="cycleName" maxlength="100" required autocomplete="off"></label>
+            <label>Starts on Monday<input id="cycleStartDate" type="date" required></label>
+            <label>Number of weeks
+                <select id="cycleWeeks" required>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option>
+                    <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                </select>
+            </label>
+            <div id="cycleFormError" class="employee-form-error" role="alert" hidden></div>
+            <div class="dialog-actions">
+                <button id="cancelCycle" type="button" class="secondary-button">Cancel</button>
+                <button id="createCycle" type="submit" class="primary-admin-button">Create draft cycle</button>
+            </div>
+        </form>
+    </dialog>
 
     <div class="toast" id="toast"></div>
 </div>
