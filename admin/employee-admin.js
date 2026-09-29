@@ -11,6 +11,9 @@ const dialog = document.querySelector('#employeeDialog');
 const form = document.querySelector('#employeeForm');
 const employeeStatus = document.querySelector('#employeeStatus');
 const csvFile = document.querySelector('#csvFile');
+const formError = document.querySelector('#employeeFormError');
+const employeeNumberInput = document.querySelector('#editEmployeeNumber');
+const cardNumberInput = document.querySelector('#editCard');
 
 function t(value) {
     return window.AdminI18n?.t(value) || value;
@@ -118,7 +121,38 @@ function render() {
         : `<tr><td colspan="6" class="empty-cell">${t('No matching employees')}</td></tr>`;
 }
 
+function clearFormError() {
+    formError.hidden = true;
+    formError.textContent = '';
+    employeeNumberInput.classList.remove('field-error');
+    cardNumberInput.classList.remove('field-error');
+    employeeNumberInput.removeAttribute('aria-invalid');
+    cardNumberInput.removeAttribute('aria-invalid');
+}
+function showFormError(message, field = null) {
+    clearFormError();
+    formError.textContent = message;
+    formError.hidden = false;
+    const input = field === 'employeeNo'
+        ? employeeNumberInput
+        : field === 'cardNumber'
+            ? cardNumberInput
+            : null;
+    if (input) {
+        input.classList.add('field-error');
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+    }
+    formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function duplicateMessage(payload, fallback) {
+    if (!payload || payload.code !== 'DUPLICATE_EMPLOYEE_VALUE') return fallback;
+    const label = payload.field === 'employeeNo' ? 'Employee number' : 'Card number';
+    const assignedTo = payload.employeeName || `employee ${payload.employeeNo}`;
+    return `${t(label)} ${payload.value} ${t('is already assigned to')} ${assignedTo}.`;
+}
 function openEdit(employee = null) {
+    clearFormError();
     document.querySelector('#dialogTitle').textContent = t(employee ? 'Edit employee' : 'Add employee');
     document.querySelector('#editOriginalEmployeeNo').value = employee?.employeeNo ?? '';
     document.querySelector('#editEmployeeNumber').value = employee?.employeeNo ?? '';
@@ -155,7 +189,7 @@ form.addEventListener('submit', async event => {
     const payload = formPayload();
 
     if (!Number.isInteger(payload.employeeNo) || payload.employeeNo <= 0) {
-        show(t('Employee number must be a positive integer'));
+        showFormError(t('Employee number must be a positive integer'), 'employeeNo');
         return;
     }
 
@@ -180,7 +214,8 @@ form.addEventListener('submit', async event => {
         show(t('Employee saved'));
     } catch (error) {
         console.error(error);
-        show(error.message);
+        const message = duplicateMessage(error.payload, error.message);
+        showFormError(message, error.payload?.field);
     } finally {
         saving = false;
         document.querySelector('#saveEmployee').disabled = false;
@@ -347,6 +382,9 @@ async function importEmployees(imported) {
 }
 
 document.querySelector('#addEmployee').addEventListener('click', () => openEdit());
+employeeNumberInput.addEventListener('input', clearFormError);
+cardNumberInput.addEventListener('input', clearFormError);
+dialog.addEventListener('close', clearFormError);
 search.addEventListener('input', render);
 statusFilter.addEventListener('change', render);
 
