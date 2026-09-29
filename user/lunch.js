@@ -1,5 +1,5 @@
 const API_BASE = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api';
-const ROTATION_ANCHOR = new Date(2026, 10, 5);
+const ROTATION_ANCHOR = new Date(2026, 9, 5);
 const USER_KEY = 'lunch-poc-current-user-v17';
 const LANGUAGE_KEY = 'lunch-poc-language-v5';
 
