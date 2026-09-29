@@ -125,10 +125,30 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 .employee-dialog-active{margin-top:14px;width:max-content}
 @media(max-width:650px){.employee-list-filters{align-items:stretch;flex-direction:column}.employee-list-filters select,.employee-list-filters input{width:100%}}
 
-/* Kitchen cancellation dialog */
-.person-order-actions{display:flex;align-items:center;gap:12px;flex:0 0 auto}
-.cancel-order-button{min-height:34px;padding:0 11px;border:1px solid #d58a8a;border-radius:8px;color:#a52121;background:#fff;font-size:12px;font-weight:700;cursor:pointer}
-.cancel-order-button:hover{background:#fff3f3}
+/* Kitchen summary accordion and cancellation controls */
+#mealSummary .expandable-meal{overflow:hidden;border-bottom:1px solid #e1e7eb;background:#fff}
+#mealSummary .expandable-meal:last-child{border-bottom:0}
+#mealSummary .meal-expand-button{width:100%;display:grid;grid-template-columns:22px minmax(0,1fr) 58px;align-items:center;gap:14px;padding:14px 18px;border:0;background:#fff;text-align:left;cursor:pointer}
+#mealSummary .meal-expand-chevron{width:22px;height:22px;display:grid;place-items:center;color:#061826;transition:transform .18s}
+#mealSummary .meal-expand-chevron::before{content:"›";font-size:25px;line-height:1}
+#mealSummary .expandable-meal.open .meal-expand-chevron{transform:rotate(90deg)}
+#mealSummary .summary-meal{min-width:0;display:block}
+#mealSummary .summary-meal strong,#mealSummary .summary-meal span{display:block}
+#mealSummary .summary-meal strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#071724;font-size:15px}
+#mealSummary .summary-meal span{margin-top:4px;color:#667783;font-size:12px}
+#mealSummary .portion-count{min-width:58px;padding:11px 12px;justify-self:end;color:#0b456d;background:#e8f2f8;border-radius:11px;text-align:center;font-size:20px;font-weight:800}
+#mealSummary .meal-people{display:none;padding:18px 20px 20px 64px;background:#f8fafb;border-top:1px solid #e1e7eb}
+#mealSummary .expandable-meal.open .meal-people{display:block}
+#mealSummary .people-section{padding:0}
+#mealSummary .people-section+.people-section{margin-top:18px;padding-top:18px;border-top:1px solid #dde5e9}
+#mealSummary .people-section h3{margin:0 0 14px;color:#071724;font-size:18px}
+#mealSummary .person-order{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:9px 0;color:#071724}
+#mealSummary .person-order>span{min-width:0;display:flex;align-items:baseline;gap:4px;flex-wrap:wrap}
+#mealSummary .person-order>span strong,#mealSummary .person-order>span small{display:block}
+#mealSummary .person-order small{color:#536875;font-size:12px}
+#mealSummary .person-order-actions{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+#mealSummary .cancel-order-button{min-height:34px;padding:0 11px;border:1px solid #d58a8a;border-radius:8px;color:#a52121;background:#fff;font-size:12px;font-weight:700;cursor:pointer}
+#mealSummary .cancel-order-button:hover{background:#fff3f3}
 .cancel-order-dialog{width:min(520px,calc(100vw - 32px));padding:0;border:0;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
 .cancel-order-dialog::backdrop{background:rgba(9,27,39,.55)}
 .cancel-order-dialog form{padding:0 20px 20px}
@@ -145,5 +165,5 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 .cancel-form-error[hidden]{display:none}
 .danger-button{min-height:42px;padding:0 16px;border:0;border-radius:9px;color:#fff;background:#b42318;font-weight:800;cursor:pointer}
 .danger-button:disabled{opacity:.55;cursor:wait}
-@media(max-width:560px){.cancel-order-context{grid-template-columns:1fr}.person-order{align-items:flex-start}.person-order-actions{gap:8px}}
-@media print{.cancel-order-button,.cancel-order-dialog{display:none!important}}
+@media(max-width:620px){#mealSummary .meal-expand-button{grid-template-columns:18px minmax(0,1fr) 52px;gap:10px;padding:13px 12px}#mealSummary .portion-count{min-width:52px}#mealSummary .meal-people{padding:15px 14px 17px 40px}#mealSummary .person-order{align-items:flex-start}#mealSummary .person-order-actions{gap:8px}.cancel-order-context{grid-template-columns:1fr}}
+@media print{#mealSummary .meal-people{display:block!important}.cancel-order-button,.cancel-order-dialog{display:none!important}}
