@@ -407,3 +407,15 @@ loadEmployees().catch(error => {
     rows.innerHTML = `<tr><td colspan="6" class="empty-cell">${esc(error.message)}</td></tr>`;
     show(`${t('Load failed')}: ${error.message}`);
 });
+
+// Save the employee when Enter is pressed in any single-line form field.
+form.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+    if (event.target instanceof HTMLTextAreaElement) return;
+
+    event.preventDefault();
+
+    if (!saving) {
+        document.querySelector('#saveEmployee').click();
+    }
+});
