@@ -1,9 +1,226 @@
-const D=window.AdminOrderData,select=document.querySelector('#daySelect'),demo=document.querySelector('#demoData'),search=document.querySelector('#employeeSearch');
-const monday=D.mondayOf(new Date()),days=Array.from({length:5},(_,i)=>{const date=new Date(monday);date.setDate(monday.getDate()+i);return date});
-select.innerHTML=days.map(date=>`<option value="${D.localKey(date)}">${date.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'2-digit'})}</option>`).join('');const today=D.localKey(new Date());if(days.some(d=>D.localKey(d)===today))select.value=today;
-let expanded=new Set();function esc(value=''){return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-function allRows(){return[...D.rows(),...(demo.checked?D.demoRows(monday):[])]}
-function filteredDayRows(){const query=search.value.trim().toLowerCase();return allRows().filter(row=>row.dateKey===select.value&&(!query||row.employeeName.toLowerCase().includes(query)||String(row.employeeNumber).toLowerCase().includes(query)))}
-function groupMeals(rows){const map=new Map();rows.forEach(row=>{const key=`${row.mealName}|${row.category}`;if(!map.has(key))map.set(key,{key,name:row.mealName,category:row.category,rows:[]});map.get(key).rows.push(row)});return[...map.values()].sort((a,b)=>b.rows.reduce((n,r)=>n+r.quantity,0)-a.rows.reduce((n,r)=>n+r.quantity,0)||a.name.localeCompare(b.name))}
-function render(){const rows=filteredDayRows(),meals=groupMeals(rows),employee=rows.filter(r=>r.type==='employee').reduce((n,r)=>n+r.quantity,0),guest=rows.filter(r=>r.type==='guest').reduce((n,r)=>n+r.quantity,0),date=D.parseDate(select.value);selectedDayHeading.textContent=date?.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'2-digit'})||'Daily totals';totalLunches.textContent=employee+guest;employeeLunches.textContent=employee;guestLunches.textContent=guest;mealTypes.textContent=meals.length;mealSummary.innerHTML=meals.map(meal=>{const open=expanded.has(meal.key),total=meal.rows.reduce((n,r)=>n+r.quantity,0),people=meal.rows.filter(r=>r.type==='employee').sort(D.firstNameSort),guests=meal.rows.filter(r=>r.type==='guest').sort(D.firstNameSort);return `<article class="expandable-meal ${open?'open':''}" data-key="${esc(meal.key)}"><button class="summary-row meal-expand-button" type="button" aria-expanded="${open}"><span class="meal-expand-chevron">›</span><span class="summary-meal"><strong>${esc(meal.name)}</strong><span>${esc(meal.category)} · ${people.reduce((n,r)=>n+r.quantity,0)} employee${guests.length?` · ${guests.reduce((n,r)=>n+r.quantity,0)} guest`:''}</span></span><span class="portion-count">${total}</span></button><div class="meal-people" ${open?'':'hidden'}>${people.length?`<div class="people-section"><h3>Employees</h3>${people.map(r=>`<div class="person-order"><span>${esc(r.employeeName)} <small>${esc(r.employeeNumber)}</small></span><strong>${r.quantity}</strong></div>`).join('')}</div>`:''}${guests.length?`<div class="people-section guest"><h3>Guest lunches</h3>${guests.map(r=>`<div class="person-order"><span>${esc(r.employeeName)} <small>${esc(r.comment)}</small></span><strong>${r.quantity}</strong></div>`).join('')}</div>`:''}</div></article>`}).join('');emptyState.hidden=meals.length>0;const guestRows=rows.filter(r=>r.type==='guest').sort(D.firstNameSort);guestDetails.innerHTML=guestRows.length?guestRows.map(r=>`<div class="guest-row"><div><strong>${esc(r.comment||'No comment')}</strong><span>Ordered by ${esc(r.employeeName)} · ${esc(r.mealName)}</span></div><span class="guest-count">${r.quantity}</span></div>`).join(''):'<div class="empty-state"><strong>No guest orders</strong><span>No matching guest lunches for this day.</span></div>';dataNote.textContent=`Showing ${rows.length} order line${rows.length===1?'':'s'}${search.value.trim()?` matching “${search.value.trim()}”`:''}. Click a meal row to view names.`}
-mealSummary.addEventListener('click',event=>{const button=event.target.closest('.meal-expand-button');if(!button)return;const key=button.closest('[data-key]').dataset.key;expanded.has(key)?expanded.delete(key):expanded.add(key);render()});select.addEventListener('change',()=>{expanded.clear();render()});demo.addEventListener('change',render);search.addEventListener('input',render);printButton.addEventListener('click',()=>window.print());render();
+const API_BASE = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api';
+
+let allOrders = [];
+let expandedMeals = new Set();
+let loading = false;
+let toastTimer;
+
+const daySelect = document.querySelector('#daySelect');
+const employeeSearch = document.querySelector('#employeeSearch');
+const totalLunches = document.querySelector('#totalLunches');
+const employeeLunches = document.querySelector('#employeeLunches');
+const guestLunches = document.querySelector('#guestLunches');
+const mealTypes = document.querySelector('#mealTypes');
+const mealSummary = document.querySelector('#mealSummary');
+const guestDetails = document.querySelector('#guestDetails');
+const emptyState = document.querySelector('#emptyState');
+const selectedDayHeading = document.querySelector('#selectedDayHeading');
+const dataNote = document.querySelector('#dataNote');
+const refreshButton = document.querySelector('#refreshButton');
+
+function esc(value = '') {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+}
+
+function localDateKey(date = new Date()) {
+    return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, '0'),
+        String(date.getDate()).padStart(2, '0')
+    ].join('-');
+}
+
+function displayDate(value) {
+    const date = new Date(`${value}T12:00:00`);
+    return new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }).format(date);
+}
+
+function mealName(order) {
+    const language = window.AdminI18n?.lang?.() || 'en';
+    if (language === 'sv') return order.nameSV || order.nameEN || order.nameFI || `Meal ${order.mealId}`;
+    if (language === 'fi') return order.nameFI || order.nameEN || order.nameSV || `Meal ${order.mealId}`;
+    return order.nameEN || order.nameSV || order.nameFI || `Meal ${order.mealId}`;
+}
+
+async function apiFetch(path) {
+    const response = await fetch(`${API_BASE}${path}`, {
+        headers: { Accept: 'application/json' }
+    });
+    const type = response.headers.get('content-type') || '';
+    const payload = type.includes('application/json')
+        ? await response.json()
+        : await response.text();
+    if (!response.ok) {
+        throw new Error(payload?.details || payload?.error || payload || `HTTP ${response.status}`);
+    }
+    return payload;
+}
+
+function filteredOrders() {
+    const query = employeeSearch.value.trim().toLowerCase();
+    if (!query) return allOrders;
+    return allOrders.filter(order =>
+        order.employeeName.toLowerCase().includes(query) ||
+        String(order.employeeNo).includes(query) ||
+        String(order.workTask || '').toLowerCase().includes(query)
+    );
+}
+
+function groupedMeals(orders) {
+    const groups = new Map();
+    for (const order of orders) {
+        const key = String(order.mealId);
+        if (!groups.has(key)) {
+            groups.set(key, {
+                key,
+                mealId: order.mealId,
+                name: mealName(order),
+                category: order.category || 'Other',
+                rows: []
+            });
+        }
+        groups.get(key).rows.push(order);
+    }
+    return [...groups.values()].sort((a, b) =>
+        portions(b.rows) - portions(a.rows) || a.name.localeCompare(b.name)
+    );
+}
+
+function portions(rows) {
+    return rows.reduce((sum, row) => sum + Number(row.quantity || 0), 0);
+}
+
+function renderMealGroup(group) {
+    const open = expandedMeals.has(group.key);
+    const people = [...group.rows].sort((a, b) =>
+        a.employeeName.localeCompare(b.employeeName) || a.orderType.localeCompare(b.orderType)
+    );
+
+    return `
+        <article class="expandable-meal ${open ? 'open' : ''}">
+            <button class="meal-expand-button" type="button" data-meal="${group.key}" aria-expanded="${open}">
+                <span class="meal-expand-chevron"></span>
+                <span class="meal-name">
+                    <strong>${esc(group.name)}</strong>
+                    <span>${esc(group.category)}</span>
+                </span>
+                <span class="portion-count">${portions(group.rows)}</span>
+            </button>
+            <div class="meal-people">
+                ${people.map(order => `
+                    <div class="person-order">
+                        <span>
+                            <strong>${esc(order.employeeName)}</strong>
+                            <small>${order.orderType === 'guest' ? `Guest · ${esc(order.workTask || 'No work task')}` : `Employee ${esc(order.employeeNo)}`}</small>
+                        </span>
+                        <strong>${order.quantity}</strong>
+                    </div>
+                `).join('')}
+            </div>
+        </article>
+    `;
+}
+
+function renderGuestDetails(orders) {
+    const guests = orders
+        .filter(order => order.orderType === 'guest')
+        .sort((a, b) =>
+            String(a.workTask || '').localeCompare(String(b.workTask || '')) ||
+            a.employeeName.localeCompare(b.employeeName)
+        );
+
+    if (guests.length === 0) {
+        guestDetails.innerHTML = '<div class="empty-state"><strong>No guest lunches</strong><span>No guest orders match the selected day and search.</span></div>';
+        return;
+    }
+
+    guestDetails.innerHTML = guests.map(order => `
+        <div class="guest-entry">
+            <div>
+                <strong>${esc(order.workTask || 'No work task or project')}</strong>
+                <span>${esc(order.employeeName)} · ${esc(mealName(order))}</span>
+            </div>
+            <strong class="guest-count">${order.quantity}</strong>
+        </div>
+    `).join('');
+}
+
+function render() {
+    const orders = filteredOrders();
+    const employeeOrders = orders.filter(order => order.orderType === 'employee');
+    const guestOrders = orders.filter(order => order.orderType === 'guest');
+    const meals = groupedMeals(orders);
+
+    selectedDayHeading.textContent = displayDate(daySelect.value);
+    totalLunches.textContent = portions(orders);
+    employeeLunches.textContent = portions(employeeOrders);
+    guestLunches.textContent = portions(guestOrders);
+    mealTypes.textContent = meals.length;
+    mealSummary.innerHTML = meals.map(renderMealGroup).join('');
+    emptyState.hidden = meals.length > 0;
+    renderGuestDetails(orders);
+}
+
+async function loadOrders() {
+    if (!daySelect.value || loading) return;
+    loading = true;
+    refreshButton.disabled = true;
+    dataNote.textContent = `Loading orders for ${displayDate(daySelect.value)}...`;
+
+    try {
+        const date = encodeURIComponent(daySelect.value);
+        const payload = await apiFetch(`/kitchen/orders?dateFrom=${date}&dateTo=${date}`);
+        allOrders = Array.isArray(payload.orders) ? payload.orders : [];
+        expandedMeals.clear();
+        render();
+        const generated = new Date(payload.generatedAt);
+        dataNote.textContent = `Loaded ${payload.summary?.orderRows ?? allOrders.length} order rows from Azure. Refreshed ${generated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}.`;
+    } catch (error) {
+        console.error(error);
+        allOrders = [];
+        render();
+        dataNote.textContent = `Load failed: ${error.message}`;
+        showToast(`Load failed: ${error.message}`);
+    } finally {
+        loading = false;
+        refreshButton.disabled = false;
+    }
+}
+
+function showToast(message) {
+    const toast = document.querySelector('#toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+daySelect.value = localDateKey();
+daySelect.addEventListener('change', loadOrders);
+employeeSearch.addEventListener('input', render);
+refreshButton.addEventListener('click', loadOrders);
+document.querySelector('#todayButton').addEventListener('click', () => {
+    daySelect.value = localDateKey();
+    loadOrders();
+});
+document.querySelector('#printButton').addEventListener('click', () => window.print());
+mealSummary.addEventListener('click', event => {
+    const button = event.target.closest('[data-meal]');
+    if (!button) return;
+    const key = button.dataset.meal;
+    if (expandedMeals.has(key)) expandedMeals.delete(key);
+    else expandedMeals.add(key);
+    render();
+});
+document.addEventListener('admin-language-changed', render);
+
+loadOrders();
