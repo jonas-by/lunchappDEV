@@ -11,6 +11,9 @@ const dialog = document.querySelector('#employeeDialog');
 const form = document.querySelector('#employeeForm');
 const employeeStatus = document.querySelector('#employeeStatus');
 const csvFile = document.querySelector('#csvFile');
+const formError = document.querySelector('#employeeFormError');
+const employeeNumberInput = document.querySelector('#editEmployeeNumber');
+const cardNumberInput = document.querySelector('#editCard');
 
 function t(value) {
     return window.AdminI18n?.t(value) || value;
@@ -118,7 +121,21 @@ function render() {
         : `<tr><td colspan="6" class="empty-cell">${t('No matching employees')}</td></tr>`;
 }
 
+function clearFormError() {
+    formError.hidden = true;
+    formError.textContent = '';
+    [employeeNumberInput, cardNumberInput].forEach(input => input.classList.remove('field-error'));
+}
+function showFormError(message, field) {
+    clearFormError();
+    formError.textContent = message;
+    formError.hidden = false;
+    const input = field === 'employeeNo' ? employeeNumberInput : field === 'cardNumber' ? cardNumberInput : null;
+    if (input) { input.classList.add('field-error'); input.focus(); }
+}
+
 function openEdit(employee = null) {
+    clearFormError();
     document.querySelector('#dialogTitle').textContent = t(employee ? 'Edit employee' : 'Add employee');
     document.querySelector('#editOriginalEmployeeNo').value = employee?.employeeNo ?? '';
     document.querySelector('#editEmployeeNumber').value = employee?.employeeNo ?? '';
@@ -180,7 +197,7 @@ form.addEventListener('submit', async event => {
         show(t('Employee saved'));
     } catch (error) {
         console.error(error);
-        show(error.message);
+        showFormError(error.message, error.payload?.field);
     } finally {
         saving = false;
         document.querySelector('#saveEmployee').disabled = false;
