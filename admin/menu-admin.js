@@ -17,6 +17,8 @@ const repeat = document.querySelector('#repeatWeeks');
 const cycleSelect = document.querySelector('#cycleSelect');
 const cycleDetails = document.querySelector('#cycleDetails');
 const newCycle = document.querySelector('#newCycle');
+const publishCycle = document.querySelector('#publishCycle');
+const archiveCycle = document.querySelector('#archiveCycle');
 const cycleDialog = document.querySelector('#cycleDialog');
 const cycleForm = document.querySelector('#cycleForm');
 const cycleFormError = document.querySelector('#cycleFormError');
@@ -167,6 +169,13 @@ function renderTabs() {
     cycleDetails.textContent = cycle
         ? `${cycle.startDate} · ${cycle.numberOfWeeks} ${t('weeks')} · ${t(cycle.status)}`
         : '';
+
+    const isDraft = cycle?.status === 'Draft';
+    const isArchived = cycle?.status === 'Archived';
+    publishCycle.hidden = !isDraft;
+    archiveCycle.hidden = isArchived;
+    saveMenu.disabled = isArchived;
+    copyPrevious.disabled = isArchived;
 }
 
 function renderLibrary() {
@@ -335,6 +344,38 @@ async function initialise() {
         saveMenu.disabled = false;
     }
 }
+
+async function updateCycleStatus(status) {
+    const cycle = cycles.find(item => item.menuCycleId === selectedCycleId);
+    if (!cycle) return;
+
+    const message = status === 'Published'
+        ? `Publish ${cycle.name}? It will become active from ${cycle.startDate}.`
+        : `Archive ${cycle.name}? It will remain available for history but can no longer be edited.`;
+    if (!confirm(message)) return;
+
+    publishCycle.disabled = true;
+    archiveCycle.disabled = true;
+    try {
+        await apiFetch(`/menu/cycles/${selectedCycleId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ status })
+        });
+        await loadCycles();
+        render();
+        menuStatus.textContent = `${cycle.name} is now ${status.toLowerCase()}.`;
+        show(status === 'Published' ? 'Menu published' : 'Menu archived');
+    } catch (error) {
+        console.error(error);
+        show(`${status === 'Published' ? 'Publish' : 'Archive'} failed: ${error.message}`);
+    } finally {
+        publishCycle.disabled = false;
+        archiveCycle.disabled = false;
+    }
+}
+
+publishCycle.addEventListener('click', () => updateCycleStatus('Published'));
+archiveCycle.addEventListener('click', () => updateCycleStatus('Archived'));
 
 cycleSelect.addEventListener('change', async () => {
     selectedCycleId = Number(cycleSelect.value);
