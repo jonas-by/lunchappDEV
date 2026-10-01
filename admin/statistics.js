@@ -1,6 +1,158 @@
-const D=window.AdminOrderData,BULLA_KEY='bulla-poc-order-log-v1',demo=document.querySelector('#statisticsDemo');
-function t(x){return window.AdminI18n?.t(x)||x}function esc(x=''){return String(x).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}function read(k,f=[]){try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}}function locale(){return window.AdminI18n?.lang()==='sv'?'sv-FI':'fi-FI'}function money(c){return new Intl.NumberFormat(locale(),{style:'currency',currency:'EUR'}).format(Number(c||0)/100)}function key(d){return D.localKey(d)}function monday(){return D.mondayOf(new Date())}
-function chart(selector,data,format,color,empty){const el=document.querySelector(selector);if(!data.some(x=>x.value>0)){el.innerHTML=`<div class="empty-state"><strong>${t(empty)}</strong></div>`;return}const W=760,H=260,p={l:60,r:24,t:28,b:46},max=Math.max(...data.map(x=>x.value),1),x=i=>p.l+i*(W-p.l-p.r)/Math.max(1,data.length-1),y=v=>H-p.b-v/max*(H-p.t-p.b),points=data.map((d,i)=>`${x(i)},${y(d.value)}`).join(' ');el.innerHTML=`<svg class="statistics-chart" viewBox="0 0 ${W} ${H}">${[0,.25,.5,.75,1].map(g=>`<line x1="${p.l}" y1="${y(max*g)}" x2="${W-p.r}" y2="${y(max*g)}" class="chart-grid"/><text x="${p.l-8}" y="${y(max*g)+4}" text-anchor="end" class="chart-axis-label">${esc(format(max*g))}</text>`).join('')}<polyline points="${points}" fill="none" stroke="${color}" stroke-width="4" stroke-linejoin="round"/>${data.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.value)}" r="5" fill="${color}"/><text x="${x(i)}" y="${H-16}" text-anchor="middle" class="chart-axis-label">${esc(d.label)}</text><text x="${x(i)}" y="${y(d.value)-11}" text-anchor="middle" class="chart-value">${esc(format(d.value))}</text>`).join('')}</svg>`}
-function renderLunch(){const m=monday(),f=new Date(m);f.setDate(m.getDate()+4);const rows=[...D.rows(),...(demo.checked?D.demoRows(m):[])].filter(r=>{const d=D.parseDate(r.dateKey);return d&&d>=m&&d<=f}),data=Array.from({length:5},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return{label:d.toLocaleDateString(locale(),{weekday:'short'}),value:rows.filter(r=>r.dateKey===key(d)).reduce((n,r)=>n+Number(r.quantity||0),0)}});weekLunches.textContent=data.reduce((n,x)=>n+x.value,0);chart('#lunchTrend',data,v=>String(Math.round(v)),'#155b87','No lunch orders')}
-function renderBulla(){const orders=read(BULLA_KEY).filter(o=>!Number.isNaN(new Date(o.timestamp).valueOf())),now=new Date(),start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-13);const data=Array.from({length:14},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return{label:i%2===0||i===13?d.toLocaleDateString(locale(),{day:'2-digit',month:'2-digit'}):'',value:orders.filter(o=>key(new Date(o.timestamp))===key(d)).reduce((n,o)=>n+Number(o.totalCents||0),0)}});chart('#bullaTrend',data,money,'#1e7a4f','No Bulla purchases');const month=orders.filter(o=>{const d=new Date(o.timestamp);return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()});monthSales.textContent=money(month.reduce((n,o)=>n+Number(o.totalCents||0),0));monthProducts.textContent=month.reduce((n,o)=>n+(o.lines||[]).reduce((s,l)=>s+Number(l.quantity||0),0),0);const map=new Map();month.forEach(o=>(o.lines||[]).forEach(l=>map.set(l.productName,(map.get(l.productName)||0)+Number(l.quantity||0))));const top=[...map].sort((a,b)=>b[1]-a[1]).slice(0,8),max=top[0]?.[1]||1;topProducts.innerHTML=top.length?top.map(([name,count],i)=>`<div class="top-product-row"><span>${i+1}</span><div><strong>${esc(name)}</strong><i><b style="width:${count/max*100}%"></b></i></div><em>${count}</em></div>`).join(''):`<div class="empty-state"><strong>${t('No Bulla purchases')}</strong></div>`}
-function render(){renderLunch();renderBulla();statisticsNote.textContent=t('Statistics use data stored in this browser. Production will read the same information from the backend.')}demo.onchange=render;printStatistics.onclick=()=>print();document.addEventListener('admin-language-changed',render);render();
+const API_URL = '/api/kitchen/weekly-summary';
+const weekPicker = document.querySelector('#weekPicker');
+const statusBox = document.querySelector('#statisticsStatus');
+
+function t(value) {
+  return window.AdminI18n?.t(value) || value;
+}
+
+function esc(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function locale() {
+  const lang = window.AdminI18n?.lang?.();
+  return lang === 'sv' ? 'sv-FI' : lang === 'fi' ? 'fi-FI' : 'en-GB';
+}
+
+function localDate(dateString) {
+  return new Date(`${dateString}T12:00:00`);
+}
+
+function formatDate(dateString, options = { weekday: 'short', day: '2-digit', month: '2-digit' }) {
+  return localDate(dateString).toLocaleDateString(locale(), options);
+}
+
+function currentIsoWeek() {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  const isoDay = date.getDay() || 7;
+  date.setDate(date.getDate() + 4 - isoDay);
+  const isoYear = date.getFullYear();
+  const yearStart = new Date(isoYear, 0, 1, 12);
+  const week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  return `${isoYear}-W${String(week).padStart(2, '0')}`;
+}
+
+function showStatus(message, type) {
+  statusBox.textContent = message;
+  statusBox.className = `statistics-status is-visible is-${type}`;
+}
+
+function clearStatus() {
+  statusBox.textContent = '';
+  statusBox.className = 'statistics-status';
+}
+
+function reasonLabel(code) {
+  if (!code) return t('Other');
+  return t(String(code).replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase()));
+}
+
+function typeLabel(type) {
+  return String(type).toLowerCase() === 'guest' ? t('Guest') : t('Employee');
+}
+
+function chart(selector, data, color, emptyText) {
+  const element = document.querySelector(selector);
+  if (!data.some(item => item.value > 0)) {
+    element.innerHTML = `<div class="empty-state"><strong>${esc(t(emptyText))}</strong></div>`;
+    return;
+  }
+
+  const width = 760;
+  const height = 260;
+  const padding = { left: 60, right: 24, top: 28, bottom: 46 };
+  const maximum = Math.max(...data.map(item => item.value), 1);
+  const x = index => padding.left + index * (width - padding.left - padding.right) / Math.max(1, data.length - 1);
+  const y = value => height - padding.bottom - value / maximum * (height - padding.top - padding.bottom);
+  const points = data.map((item, index) => `${x(index)},${y(item.value)}`).join(' ');
+
+  element.innerHTML = `<svg class="statistics-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(t('Served lunches by day'))}">
+    ${[0, .25, .5, .75, 1].map(grid => `<line x1="${padding.left}" y1="${y(maximum * grid)}" x2="${width - padding.right}" y2="${y(maximum * grid)}" class="chart-grid"/><text x="${padding.left - 8}" y="${y(maximum * grid) + 4}" text-anchor="end" class="chart-axis-label">${Math.round(maximum * grid)}</text>`).join('')}
+    <polyline points="${points}" fill="none" stroke="${color}" stroke-width="4" stroke-linejoin="round"/>
+    ${data.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.value)}" r="5" fill="${color}"/><text x="${x(index)}" y="${height - 16}" text-anchor="middle" class="chart-axis-label">${esc(item.label)}</text><text x="${x(index)}" y="${y(item.value) - 11}" text-anchor="middle" class="chart-value">${item.value}</text>`).join('')}
+  </svg>`;
+}
+
+function render(data) {
+  orderedTotal.textContent = data.totals.ordered;
+  servedTotal.textContent = data.totals.served;
+  cancelledTotal.textContent = data.totals.cancelled;
+  cancelledPercent.textContent = `${data.totals.cancellationPercent}% ${t('of orders')}`;
+
+  if (data.totals.peakDay) {
+    peakDay.textContent = formatDate(data.totals.peakDay.date, { weekday: 'long' });
+    peakDayDetail.textContent = `${data.totals.peakDay.served} ${t('served portions')}`;
+  } else {
+    peakDay.textContent = '-';
+    peakDayDetail.textContent = t('No orders');
+  }
+
+  const weekdays = (data.daily || []).filter(day => day.isoDay <= 5);
+  chart('#lunchTrend', weekdays.map(day => ({
+    label: formatDate(day.date, { weekday: 'short' }),
+    value: day.served
+  })), '#155b87', 'No lunch orders');
+
+  dailyBreakdown.innerHTML = weekdays.map(day => `<tr>
+    <td><strong>${esc(formatDate(day.date, { weekday: 'long', day: '2-digit', month: '2-digit' }))}</strong></td>
+    <td>${day.ordered}</td>
+    <td>${day.served}</td>
+    <td>${day.cancelled}</td>
+  </tr>`).join('');
+
+  const reasons = data.cancellationReasons || [];
+  const reasonMax = Math.max(...reasons.map(reason => reason.quantity), 1);
+  cancellationReasons.innerHTML = reasons.length
+    ? reasons.map(reason => `<div class="reason-row"><strong>${esc(reasonLabel(reason.reasonCode))}</strong><i><b style="width:${reason.quantity / reasonMax * 100}%"></b></i><em>${reason.quantity}</em></div>`).join('')
+    : `<div class="empty-state"><strong>${esc(t('No cancellations'))}</strong></div>`;
+
+  const cancellations = data.cancellations || [];
+  cancellationDetails.innerHTML = cancellations.length
+    ? cancellations.map(item => `<tr>
+        <td>${esc(formatDate(item.menuDate))}</td>
+        <td><strong>${esc(item.employeeName || item.employeeNo || '-')}</strong></td>
+        <td>${esc(typeLabel(item.orderType))}</td>
+        <td>${item.quantity}</td>
+        <td>${esc(reasonLabel(item.reasonCode))}</td>
+        <td>${esc(item.reasonText || '-')}</td>
+      </tr>`).join('')
+    : `<tr><td colspan="6"><div class="empty-state"><strong>${esc(t('No cancellations'))}</strong></div></td></tr>`;
+
+  statisticsNote.textContent = `${t('Showing ISO week')} ${data.week}. ${t('The dashboard displays Monday to Friday while the API retains all seven days.')}`;
+}
+
+async function loadSummary() {
+  const week = weekPicker.value;
+  if (!week) return;
+
+  showStatus(t('Loading weekly summary...'), 'loading');
+  weekPicker.disabled = true;
+
+  try {
+    const response = await fetch(`${API_URL}?week=${encodeURIComponent(week)}`, {
+      headers: { Accept: 'application/json' }
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.details || body.error || `${response.status} ${response.statusText}`);
+    render(body);
+    clearStatus();
+  } catch (error) {
+    console.error('Weekly summary request failed', error);
+    showStatus(`${t('Could not load weekly summary')}: ${error.message}`, 'error');
+  } finally {
+    weekPicker.disabled = false;
+  }
+}
+
+weekPicker.value = currentIsoWeek();
+weekPicker.addEventListener('change', loadSummary);
+printStatistics.addEventListener('click', () => print());
+document.addEventListener('admin-language-changed', loadSummary);
+loadSummary();
