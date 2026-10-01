@@ -2,8 +2,26 @@ const API_URL = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azur
 const weekPicker = document.querySelector('#weekPicker');
 const statusBox = document.querySelector('#statisticsStatus');
 
-function t(value) {
-  return window.AdminI18n?.t(value) || value;
+const TRANSLATIONS = {
+  sv: {
+    'Kitchen':'Kök','Weekly lunch summary':'Veckosammanfattning för lunch','Print':'Skriv ut','Statistics':'Statistik','Weekly summary':'Veckosammanfattning','Lunch orders, served portions and kitchen cancellations.':'Lunchbeställningar, serverade portioner och avbokningar i köket.','Week':'Vecka','Ordered':'Beställda','Served':'Serverade','Cancelled':'Avbokade','Peak day':'Toppdag','Portions originally ordered':'Ursprungligen beställda portioner','Ordered minus cancellations':'Beställda minus avbokningar','No orders':'Inga beställningar','Served lunches by day':'Serverade luncher per dag','Monday to Friday. Weekend data remains available if production expands.':'Måndag till fredag. Helgdata finns kvar om produktionen utökas.','Daily breakdown':'Daglig sammanställning','Ordered, served and cancelled portions for each weekday.':'Beställda, serverade och avbokade portioner per vardag.','Day':'Dag','Cancellation reasons':'Orsaker till avbokning','Cancelled portions grouped by reason.':'Avbokade portioner grupperade enligt orsak.','Cancellation details':'Avbokningsdetaljer','Individual cancellations recorded during the selected week.':'Enskilda avbokningar registrerade under den valda veckan.','Date':'Datum','Employee / host':'Anställd / värd','Type':'Typ','Qty':'Antal','Reason':'Orsak','Comment':'Kommentar','Employee':'Anställd','Guest':'Gäst','Other':'Övrigt','Employee Absent':'Anställd frånvarande','Insufficient Portions':'Otillräckligt antal portioner','Wrong Order':'Felaktig beställning','Sick Leave':'Sjukfrånvaro','Left Site':'Lämnat området','No cancellations':'Inga avbokningar','No lunch orders':'Inga lunchbeställningar','of orders':'av beställningarna','served portions':'serverade portioner','Loading weekly summary...':'Laddar veckosammanfattning...','Could not load weekly summary':'Kunde inte läsa in veckosammanfattningen','Showing ISO week':'Visar ISO-vecka','The dashboard displays Monday to Friday while the API retains all seven days.':'Panelen visar måndag till fredag medan API:et behåller veckans alla sju dagar.'
+  },
+  fi: {
+    'Kitchen':'Keittiö','Weekly lunch summary':'Lounaiden viikkoyhteenveto','Print':'Tulosta','Statistics':'Tilastot','Weekly summary':'Viikkoyhteenveto','Lunch orders, served portions and kitchen cancellations.':'Lounastilaukset, tarjoillut annokset ja keittiön peruutukset.','Week':'Viikko','Ordered':'Tilatut','Served':'Tarjoillut','Cancelled':'Peruutetut','Peak day':'Huippupäivä','Portions originally ordered':'Alun perin tilatut annokset','Ordered minus cancellations':'Tilatut vähennettynä peruutuksilla','No orders':'Ei tilauksia','Served lunches by day':'Tarjoillut lounaat päivittäin','Monday to Friday. Weekend data remains available if production expands.':'Maanantaista perjantaihin. Viikonlopun tiedot säilyvät, jos tuotanto laajenee.','Daily breakdown':'Päivittäinen yhteenveto','Ordered, served and cancelled portions for each weekday.':'Tilatut, tarjoillut ja peruutetut annokset arkipäivittäin.','Day':'Päivä','Cancellation reasons':'Peruutusten syyt','Cancelled portions grouped by reason.':'Peruutetut annokset ryhmiteltynä syyn mukaan.','Cancellation details':'Peruutusten tiedot','Individual cancellations recorded during the selected week.':'Valitun viikon yksittäiset peruutukset.','Date':'Päivämäärä','Employee / host':'Työntekijä / isäntä','Type':'Tyyppi','Qty':'Määrä','Reason':'Syy','Comment':'Kommentti','Employee':'Työntekijä','Guest':'Vieras','Other':'Muu','Employee Absent':'Työntekijä poissa','Insufficient Portions':'Riittämätön määrä annoksia','Wrong Order':'Virheellinen tilaus','Sick Leave':'Sairauspoissaolo','Left Site':'Poistunut alueelta','No cancellations':'Ei peruutuksia','No lunch orders':'Ei lounastilauksia','of orders':'tilauksista','served portions':'tarjoiltua annosta','Loading weekly summary...':'Ladataan viikkoyhteenvetoa...','Could not load weekly summary':'Viikkoyhteenvedon lataaminen epäonnistui','Showing ISO week':'Näytetään ISO-viikko','The dashboard displays Monday to Friday while the API retains all seven days.':'Näkymä näyttää maanantaista perjantaihin, mutta API säilyttää kaikki seitsemän päivää.'
+  }
+};
+
+function language() { return window.AdminI18n?.lang?.() || localStorage.getItem('adminLanguage') || document.documentElement.lang || 'en'; }
+function t(value) { return TRANSLATIONS[language()]?.[value] || window.AdminI18n?.t(value) || value; }
+function translateStaticText() {
+  document.querySelectorAll('h1,h2,p,span,small,th,label,.save-link,.eyebrow').forEach(el => {
+    if (el.children.length) return;
+    const key = el.dataset.i18nSource || el.textContent.trim();
+    if (!key) return;
+    el.dataset.i18nSource = key;
+    el.textContent = t(key);
+  });
+  document.documentElement.lang = language();
 }
 
 function esc(value = '') {
@@ -151,8 +169,9 @@ async function loadSummary() {
   }
 }
 
+translateStaticText();
 weekPicker.value = currentIsoWeek();
 weekPicker.addEventListener('change', loadSummary);
 printStatistics.addEventListener('click', () => print());
-document.addEventListener('admin-language-changed', loadSummary);
+document.addEventListener('admin-language-changed', () => { translateStaticText(); loadSummary(); });
 loadSummary();
