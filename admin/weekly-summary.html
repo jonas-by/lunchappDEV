@@ -6,62 +6,109 @@
   <meta name="theme-color" content="#155b87">
   <title>Weekly lunch summary</title>
   <link rel="stylesheet" href="lunch.css">
-  <script src="admin-i18n.js" defer></script><script src="order-data.js" defer></script><script src="weekly-summary.js" defer></script>
+  <link rel="stylesheet" href="statistics.css">
+  <script src="admin-i18n.js" defer></script>
+  <script src="statistics.js" defer></script>
 </head>
 <body>
-  <div class="app-shell admin-shell weekly-summary-page">
+  <div class="app-shell admin-shell">
     <header class="app-header">
-      <a class="back-button" href="index.html" aria-label="Back to administration">‹</a>
-      <div class="header-title"><h1>Weekly summary</h1><span>Employee and guest lunch counts</span></div>
-      <button class="save-link" id="printWeekly" type="button">Print</button>
+      <a class="back-button" href="index.html" aria-label="Back">‹</a>
+      <div class="header-title">
+        <h1>Kitchen</h1>
+        <span>Weekly lunch summary</span>
+      </div>
+      <button class="save-link" id="printStatistics" type="button">Print</button>
     </header>
-    <main>
-      <section class="weekly-toolbar">
-        <div class="setting-field">
-          <label for="weekSelect">Week</label>
-          <select id="weekSelect"></select>
+
+    <main class="statistics-main">
+      <section class="statistics-toolbar">
+        <div>
+          <span class="eyebrow">Statistics</span>
+          <h2>Weekly summary</h2>
+          <p>Lunch orders, served portions and kitchen cancellations.</p>
         </div>
-        <label class="demo-switch"><input id="weeklyDemoData" type="checkbox" checked><span>Include demo data</span></label>
+        <label class="week-control" for="weekPicker">
+          <span>Week</span>
+          <input id="weekPicker" type="week">
+        </label>
       </section>
 
-      <section class="summary-cards weekly-cards" aria-label="Weekly totals">
-        <article><span>Employee lunches</span><strong id="weeklyEmployeeTotal">0</strong></article>
-        <article><span>Employees</span><strong id="weeklyEmployeeCount">0</strong></article>
-        <article><span>Guest lunches</span><strong id="weeklyGuestTotal">0</strong></article>
-        <article><span>Guest comments</span><strong id="weeklyGuestCount">0</strong></article>
+      <div id="statisticsStatus" class="statistics-status" role="status" aria-live="polite"></div>
+
+      <section class="statistics-cards" aria-label="Weekly totals">
+        <article>
+          <span>Ordered</span>
+          <strong id="orderedTotal">0</strong>
+          <small>Portions originally ordered</small>
+        </article>
+        <article>
+          <span>Served</span>
+          <strong id="servedTotal">0</strong>
+          <small>Ordered minus cancellations</small>
+        </article>
+        <article>
+          <span>Cancelled</span>
+          <strong id="cancelledTotal">0</strong>
+          <small id="cancelledPercent">0% of orders</small>
+        </article>
+        <article>
+          <span>Peak day</span>
+          <strong id="peakDay">-</strong>
+          <small id="peakDayDetail">No orders</small>
+        </article>
       </section>
 
-      <section class="weekly-panel">
-        <div class="panel-heading weekly-heading">
-          <div><h2>Employee lunches</h2><p>One row per employee. Meal choices are deliberately not shown.</p></div>
-          <button class="secondary-button export-button" id="exportEmployees" type="button">Export employee CSV</button>
-        </div>
-        <div class="summary-table-wrap">
-          <table class="summary-table">
-            <thead><tr><th>Employee</th><th class="number-column">Lunches</th></tr></thead>
-            <tbody id="employeeRows"></tbody>
-            <tfoot><tr><th>Total</th><th class="number-column" id="employeeFooter">0</th></tr></tfoot>
-          </table>
-        </div>
+      <section class="statistics-grid">
+        <article class="statistics-panel">
+          <header>
+            <h2>Served lunches by day</h2>
+            <p>Monday to Friday. Weekend data remains available if production expands.</p>
+          </header>
+          <div class="chart-wrap" id="lunchTrend"></div>
+        </article>
+
+        <article class="statistics-panel">
+          <header>
+            <h2>Daily breakdown</h2>
+            <p>Ordered, served and cancelled portions for each weekday.</p>
+          </header>
+          <div class="table-wrap">
+            <table class="statistics-table">
+              <thead>
+                <tr><th>Day</th><th>Ordered</th><th>Served</th><th>Cancelled</th></tr>
+              </thead>
+              <tbody id="dailyBreakdown"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="statistics-panel">
+          <header>
+            <h2>Cancellation reasons</h2>
+            <p>Cancelled portions grouped by reason.</p>
+          </header>
+          <div class="reason-list" id="cancellationReasons"></div>
+        </article>
+
+        <article class="statistics-panel">
+          <header>
+            <h2>Cancellation details</h2>
+            <p>Individual cancellations recorded during the selected week.</p>
+          </header>
+          <div class="table-wrap">
+            <table class="statistics-table cancellation-table">
+              <thead>
+                <tr><th>Date</th><th>Employee / host</th><th>Type</th><th>Qty</th><th>Reason</th><th>Comment</th></tr>
+              </thead>
+              <tbody id="cancellationDetails"></tbody>
+            </table>
+          </div>
+        </article>
       </section>
 
-      <section class="weekly-panel">
-        <div class="panel-heading weekly-heading">
-          <div><h2>Guest lunches</h2><p>Comments remain separate exactly as entered. No spelling or project matching is applied.</p></div>
-          <button class="secondary-button export-button" id="exportGuests" type="button">Export guest CSV</button>
-        </div>
-        <div class="summary-table-wrap">
-          <table class="summary-table">
-            <thead><tr><th>Work task / project comment</th><th class="number-column">Lunches</th></tr></thead>
-            <tbody id="guestRows"></tbody>
-            <tfoot><tr><th>Total</th><th class="number-column" id="guestFooter">0</th></tr></tfoot>
-          </table>
-        </div>
-      </section>
-
-      <p class="poc-note">POC note: demo data represents multiple users. Orders saved in this browser are added as Jonas Westerlund and their guest comment. A production system would read all users from the backend.</p>
+      <p class="poc-note" id="statisticsNote"></p>
     </main>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 </body>
 </html>
