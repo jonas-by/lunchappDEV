@@ -167,34 +167,4 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 .danger-button:disabled{opacity:.55;cursor:wait}
 @media(max-width:620px){#mealSummary .meal-expand-button{grid-template-columns:18px minmax(0,1fr) 52px;gap:10px;padding:13px 12px}#mealSummary .portion-count{min-width:52px}#mealSummary .meal-people{padding:15px 14px 17px 40px}#mealSummary .person-order{align-items:flex-start}#mealSummary .person-order-actions{gap:8px}.cancel-order-context{grid-template-columns:1fr}}
 @media print{#mealSummary .meal-people{display:block!important}.cancel-order-button,.cancel-order-dialog{display:none!important}}
-
-/* Ordering deadline state */
-.deadline-locked {
-  overflow: hidden;
-  border-color: #e2c979;
-  background: #fff;
-}
-
-.deadline-locked .day-toggle {
-  background: #fffaf0;
-}
-
-.deadline-lock-note {
-  padding: 10px 18px;
-  color: #725715;
-  background: #fff3cc;
-  border-bottom: 1px solid #eadb9d;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-.deadline-locked .stepper button:disabled {
-  opacity: .28;
-}
-
-@media (min-width: 700px) {
-  .deadline-lock-note {
-    padding-inline: 22px;
-  }
-}
+.my-order-subgroup h4{margin:10px 0 4px;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}.my-order-subgroup+.my-order-subgroup{margin-top:10px;padding-top:6px;border-top:1px solid #edf0f2}
