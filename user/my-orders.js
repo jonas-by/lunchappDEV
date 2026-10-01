@@ -36,7 +36,7 @@ const copy = {
         source: 'Personal and guest orders are loaded from Azure.',
         back: 'Back to lunch ordering',
         loading: 'Loading orders...',
-        failed: 'Could not load orders'
+        failed: 'Could not load orders', salad: 'Salad'
     },
     sv: {
         title: 'Mina beställningar',
@@ -55,7 +55,7 @@ const copy = {
         source: 'Egna beställningar och gästbeställningar hämtas från Azure.',
         back: 'Tillbaka till lunchbeställning',
         loading: 'Laddar beställningar...',
-        failed: 'Kunde inte ladda beställningarna'
+        failed: 'Kunde inte ladda beställningarna', salad: 'Sallad'
     },
     fi: {
         title: 'Omat tilaukset',
@@ -74,7 +74,7 @@ const copy = {
         source: 'Omat tilaukset ja vierastilaukset ladataan Azuresta.',
         back: 'Takaisin lounastilaukseen',
         loading: 'Ladataan tilauksia...',
-        failed: 'Tilausten lataaminen epäonnistui'
+        failed: 'Tilausten lataaminen epäonnistui', salad: 'Salaatti'
     }
 };
 
@@ -165,6 +165,13 @@ function translatedMealName(order) {
     return order.nameEN || order.nameSV || order.nameFI || copy[language].menu;
 }
 
+function translatedSaladName(order) {
+    const salad = order.salad;
+    if (!salad) return '';
+    if (language === 'sv') return salad.nameSV || salad.nameSv || salad.nameEN || salad.nameEn || salad.nameFI || salad.nameFi || '';
+    if (language === 'fi') return salad.nameFI || salad.nameFi || salad.nameSV || salad.nameSv || salad.nameEN || salad.nameEn || '';
+    return salad.nameEN || salad.nameEn || salad.nameSV || salad.nameSv || salad.nameFI || salad.nameFi || '';
+}
 function translatedCategory(category) {
     return categoryNames[category]?.[language] || category || '';
 }
