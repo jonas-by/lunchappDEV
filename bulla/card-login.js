@@ -1,6 +1,33 @@
-const E='lunch-poc-employees-v8',S='bulla-poc-card-session-v1',defaults=[{cardNumber:'123',employeeNumber:'10435',employeeName:'Jonas Westerlund'},{cardNumber:'456',employeeNumber:'10473',employeeName:'Diana Fagerholm'},{cardNumber:'789',employeeNumber:'10488',employeeName:'Thomas Nyström'}];
-function employees(){try{const x=JSON.parse(localStorage.getItem(E));if(x?.length)return x}catch{}return defaults}
-function normalizeCardNumber(value){const card=String(value).trim();return card.length>5?card.slice(-5):card}
-sessionStorage.removeItem(S);
-function login(v){const card=normalizeCardNumber(v),x=employees().find(e=>String(e.cardNumber)===card);if(!x){loginMessage.textContent='Card not recognized.';loginMessage.className='login-message error';cardInput.value='';cardInput.focus();return}sessionStorage.setItem(S,JSON.stringify(x));loginMessage.textContent=`Welcome, ${x.employeeName}`;loginMessage.className='login-message success';setTimeout(()=>location.href='order.html',250)}
-cardForm.addEventListener('submit',e=>{e.preventDefault();login(cardInput.value)});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>login(b.dataset.card));
+const CARD_LOGIN_API = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api/kiosk/card-login';
+const SESSION_KEY = 'cafe-kiosk-card-session-v1';
+const LANGUAGE_KEY = 'lunch-poc-language-v5';
+let language = localStorage.getItem(LANGUAGE_KEY) || 'sv';
+let submitting = false;
+
+const copy = {
+  en: { title:'Scan your card', help:'Hold the card against the reader to begin.', card:'Card number', button:'Continue', language:'Language', checking:'Checking card...', failed:'Card login failed.' },
+  sv: { title:'Skanna ditt kort', help:'Håll kortet mot läsaren för att börja.', card:'Kortnummer', button:'Fortsätt', language:'Språk', checking:'Kontrollerar kort...', failed:'Kortinloggningen misslyckades.' },
+  fi: { title:'Skannaa korttisi', help:'Aloita pitämällä korttia lukijaa vasten.', card:'Kortin numero', button:'Jatka', language:'Kieli', checking:'Tarkistetaan korttia...', failed:'Korttikirjautuminen epäonnistui.' }
+};
+const t=()=>copy[language]||copy.sv;
+function applyText(){const x=t();document.documentElement.lang=language;loginTitle.textContent=x.title;loginHelp.textContent=x.help;cardLabel.textContent=x.card;loginButton.textContent=x.button;languageLabel.textContent=x.language;languageSelect.value=language;}
+function message(value,type=''){loginMessage.textContent=value;loginMessage.className=`login-message ${type}`;}
+async function login(cardNumber){
+  if(submitting)return;
+  const clean=String(cardNumber||'').trim();
+  if(!clean)return;
+  submitting=true;loginButton.disabled=true;message(t().checking,'loading');
+  try{
+    const response=await fetch(CARD_LOGIN_API,{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify({cardNumber:clean})});
+    const body=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(body.details||body.error||`HTTP ${response.status}`);
+    sessionStorage.setItem(SESSION_KEY,JSON.stringify({...body,cardNumber:clean,loginTime:new Date().toISOString()}));
+    location.replace('order.html');
+  }catch(error){message(error.message||t().failed,'error');cardInput.value='';cardInput.focus();}
+  finally{submitting=false;loginButton.disabled=false;}
+}
+sessionStorage.removeItem(SESSION_KEY);
+applyText();
+languageSelect.addEventListener('change',()=>{language=languageSelect.value;localStorage.setItem(LANGUAGE_KEY,language);applyText();cardInput.focus();});
+cardForm.addEventListener('submit',event=>{event.preventDefault();login(cardInput.value);});
+window.addEventListener('load',()=>cardInput.focus());

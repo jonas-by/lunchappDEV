@@ -1,1 +1,34 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bulla kiosk login</title><link rel="stylesheet" href="bulla.css"><script src="demo-users.js" defer></script><script src="card-login.js" defer></script></head><body><main class="login-shell"><section class="login-card"><div class="login-mark">B</div><h1>Bulla kiosk</h1><p>Swipe your card or enter the card number.</p><form id="cardForm"><label>Card number<input id="cardInput" inputmode="numeric" autofocus required></label><button>Continue</button></form><div id="loginMessage" class="login-message"></div><div class="demo-cards demo-cards-stacked"><span>Test users</span><div class="demo-card-grid" data-demo-card-list></div></div></section></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Kiosk</title>
+  <link rel="stylesheet" href="bulla.css">
+  <script src="card-login.js" defer></script>
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="login-mark">B</div>
+      <span class="login-eyebrow">Café Kiosk</span>
+      <h1 id="loginTitle">Scan your card</h1>
+      <p id="loginHelp">Hold the card against the reader to begin.</p>
+      <form id="cardForm" autocomplete="off">
+        <label for="cardInput" id="cardLabel">Card number</label>
+        <input id="cardInput" name="cardNumber" inputmode="numeric" autocomplete="off" autofocus required>
+        <button id="loginButton" type="submit">Continue</button>
+      </form>
+      <p id="loginMessage" class="login-message" role="status"></p>
+      <label class="login-language">
+        <span id="languageLabel">Language</span>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="sv">Svenska</option>
+          <option value="fi">Suomi</option>
+        </select>
+      </label>
+    </section>
+  </main>
+</body>
+</html>
