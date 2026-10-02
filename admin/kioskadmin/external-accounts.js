@@ -261,12 +261,10 @@ const status = $("#status"),
   toastEl = $("#toast");
 languageSelect.value = language;
 applyText();
-applyAccountPageTranslations();
 languageSelect.addEventListener("change", () => {
   language = languageSelect.value;
   localStorage.setItem("lunch-poc-language-v5", language);
   applyText();
-  applyAccountPageTranslations();
   render();
 });
 searchInput.addEventListener("input", render);
@@ -380,69 +378,19 @@ moneyForm.addEventListener("submit", async (e) => {
 });
 load();
 
-
-const accountPageTranslations = {
-  en: {
-    heroTitle: 'External accounts', heroText: 'Manage prepaid balances, postpaid billing accounts and linked cards.',
-    searchLabel: 'Search', searchPlaceholder: 'Search accounts', modeLabel: 'Account mode',
-    dialogTitle: 'External account', displayName: 'Display name', company: 'Company', accountMode: 'Account mode',
-    creditLimit: 'Credit limit (€)', externalReference: 'External reference', invoiceReference: 'Invoice reference',
-    contactName: 'Contact name', contactEmail: 'Contact email', validFrom: 'Valid from', validUntil: 'Valid until',
-    notes: 'Notes', active: 'Active', createCard: 'Create and link an initial card', cardNumber: 'Card number',
-    cardHolder: 'Card holder name', cardHint: 'Additional cards can be added later in External Cards.',
-    cancel: 'Cancel', save: 'Save', transaction: 'Account transaction', amount: 'Amount (€)', recordedBy: 'Recorded by',
-    description: 'Description', settlementReference: 'Settlement reference', invoiceNumber: 'Invoice number',
-    saveTransaction: 'Save transaction', close: 'Close', ledgerTitle: 'Ledger'
-  },
-  sv: {
-    heroTitle: 'Externa konton', heroText: 'Hantera förbetalda saldon, efterbetalda konton, fakturering och kopplade kort.',
-    searchLabel: 'Sök', searchPlaceholder: 'Sök konton', modeLabel: 'Kontotyp',
-    dialogTitle: 'Externt konto', displayName: 'Visningsnamn', company: 'Företag', accountMode: 'Kontotyp',
-    creditLimit: 'Kreditgräns (€)', externalReference: 'Extern referens', invoiceReference: 'Fakturareferens',
-    contactName: 'Kontaktperson', contactEmail: 'Kontaktens e-post', validFrom: 'Giltigt från', validUntil: 'Giltigt till',
-    notes: 'Anteckningar', active: 'Aktivt', createCard: 'Skapa och koppla ett första kort', cardNumber: 'Kortnummer',
-    cardHolder: 'Kortinnehavarens namn', cardHint: 'Fler kort kan läggas till senare under Externa kort.',
-    cancel: 'Avbryt', save: 'Spara', transaction: 'Kontotransaktion', amount: 'Belopp (€)', recordedBy: 'Registrerad av',
-    description: 'Beskrivning', settlementReference: 'Betalningsreferens', invoiceNumber: 'Fakturanummer',
-    saveTransaction: 'Spara transaktion', close: 'Stäng', ledgerTitle: 'Kontohistorik'
-  },
-  fi: {
-    heroTitle: 'Ulkoiset tilit', heroText: 'Hallinnoi ennakkomaksusaldot, jälkimaksutilit, laskutus ja liitetyt kortit.',
-    searchLabel: 'Haku', searchPlaceholder: 'Hae tilejä', modeLabel: 'Tilityyppi',
-    dialogTitle: 'Ulkoinen tili', displayName: 'Näyttönimi', company: 'Yritys', accountMode: 'Tilityyppi',
-    creditLimit: 'Luottoraja (€)', externalReference: 'Ulkoinen viite', invoiceReference: 'Laskutusviite',
-    contactName: 'Yhteyshenkilö', contactEmail: 'Yhteyshenkilön sähköposti', validFrom: 'Voimassa alkaen', validUntil: 'Voimassa asti',
-    notes: 'Muistiinpanot', active: 'Aktiivinen', createCard: 'Luo ja liitä ensimmäinen kortti', cardNumber: 'Kortin numero',
-    cardHolder: 'Kortinhaltijan nimi', cardHint: 'Lisäkortteja voi lisätä myöhemmin Ulkoiset kortit -sivulla.',
-    cancel: 'Peruuta', save: 'Tallenna', transaction: 'Tilitapahtuma', amount: 'Summa (€)', recordedBy: 'Kirjaaja',
-    description: 'Kuvaus', settlementReference: 'Maksuviite', invoiceNumber: 'Laskunumero',
-    saveTransaction: 'Tallenna tapahtuma', close: 'Sulje', ledgerTitle: 'Tilitapahtumat'
-  }
+// Extended page translations. Kept after the main application code so the core load path remains untouched.
+const extendedAccountText = {
+  en: { heroTitle:'External accounts', heroText:'Manage prepaid balances, postpaid billing accounts and linked cards.', search:'Search', searchPlaceholder:'Search accounts', mode:'Account mode' },
+  sv: { heroTitle:'Externa konton', heroText:'Hantera förbetalda saldon, efterbetalda konton, fakturering och kopplade kort.', search:'Sök', searchPlaceholder:'Sök konton', mode:'Kontotyp' },
+  fi: { heroTitle:'Ulkoiset tilit', heroText:'Hallinnoi ennakkomaksusaldot, jälkimaksutilit, laskutus ja liitetyt kortit.', search:'Haku', searchPlaceholder:'Hae tilejä', mode:'Tilityyppi' }
 };
-
-function applyAccountPageTranslations() {
-  const x = accountPageTranslations[language] || accountPageTranslations.en;
-  const hero = document.querySelector('.kiosk-admin-welcome');
-  if (hero) {
-    hero.querySelector('h2').textContent = x.heroTitle;
-    hero.querySelector('p').textContent = x.heroText;
-  }
-  const toolbarLabels = document.querySelectorAll('.kiosk-admin-toolbar .setting-field > span');
-  if (toolbarLabels[0]) toolbarLabels[0].textContent = x.searchLabel;
-  if (toolbarLabels[1]) toolbarLabels[1].textContent = x.modeLabel;
-  searchInput.placeholder = x.searchPlaceholder;
-  accountDialogTitle.textContent = x.dialogTitle;
-  setFieldLabel(displayName, x.displayName); setFieldLabel(companyName, x.company); setFieldLabel(accountMode, x.accountMode);
-  setFieldLabel(creditLimit, x.creditLimit); setFieldLabel(externalReference, x.externalReference); setFieldLabel(invoiceReference, x.invoiceReference);
-  setFieldLabel(contactName, x.contactName); setFieldLabel(contactEmail, x.contactEmail); setFieldLabel(validFrom, x.validFrom);
-  setFieldLabel(validUntil, x.validUntil); setFieldLabel(notes, x.notes); setToggleLabel(accountActive, x.active);
-  setToggleLabel(createInitialCard, x.createCard); setFieldLabel(initialCardNumber, x.cardNumber); setFieldLabel(initialCardHolderName, x.cardHolder);
-  const hint = document.querySelector('#initialCardSection .field-hint'); if (hint) hint.textContent = x.cardHint;
-  const accountButtons = accountForm.querySelectorAll('.dialog-actions button'); if (accountButtons[0]) accountButtons[0].textContent=x.cancel; if(accountButtons[1]) accountButtons[1].textContent=x.save;
-  moneyTitle.textContent=x.transaction; setFieldLabel(moneyAmount,x.amount); setFieldLabel(moneyCreatedBy,x.recordedBy); setFieldLabel(moneyDescription,x.description);
-  setFieldLabel(moneyReference,x.settlementReference); setFieldLabel(moneyInvoice,x.invoiceNumber);
-  const moneyButtons=moneyForm.querySelectorAll('.dialog-actions button'); if(moneyButtons[0]) moneyButtons[0].textContent=x.cancel; if(moneyButtons[1]) moneyButtons[1].textContent=x.saveTransaction;
-  ledgerTitle.textContent=x.ledgerTitle; const close=document.querySelector('#ledgerDialog .dialog-actions button'); if(close) close.textContent=x.close;
+function applyExtendedAccountText(){
+  const x=extendedAccountText[language]||extendedAccountText.en;
+  const hero=document.querySelector('.kiosk-admin-welcome');
+  if(hero){hero.querySelector('h2').textContent=x.heroTitle;hero.querySelector('p').textContent=x.heroText;}
+  const labels=document.querySelectorAll('.kiosk-admin-toolbar .setting-field > span');
+  if(labels[0])labels[0].textContent=x.search;if(labels[1])labels[1].textContent=x.mode;
+  if(typeof searchInput!=='undefined')searchInput.placeholder=x.searchPlaceholder;
 }
-function setFieldLabel(control,text){const label=control?.closest('label');const span=label?.querySelector('span');if(span)span.textContent=text;}
-function setToggleLabel(control,text){setFieldLabel(control,text);}
+applyExtendedAccountText();
+languageSelect.addEventListener('change',applyExtendedAccountText);
