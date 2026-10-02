@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Kiosk product library</title>
+  <link rel="stylesheet" href="../lunch.css">
+  <link rel="stylesheet" href="cafe-kiosk-admin.css">
+  <script src="kiosk-products-admin.js" defer></script>
+</head>
+<body>
+  <div class="app-shell kiosk-admin-shell">
+    <header class="app-header kiosk-admin-header">
+      <a class="back-button" href="../index.html" aria-label="Back">‹</a>
+      <div class="header-title">
+        <h1 id="pageTitle">Product library</h1>
+        <span id="pageSubtitle">Products, prices and translations</span>
+      </div>
+      <select id="languageSelect" class="language-select admin-language" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="sv">SV</option>
+        <option value="fi">FI</option>
+      </select>
+      <button id="newProductButton" class="header-link header-action-button" type="button">New product</button>
+    </header>
+
+    <main class="kiosk-admin-main">
+      <section class="admin-welcome kiosk-admin-welcome">
+        <span class="eyebrow">Café Kiosk</span>
+        <h2 id="heroTitle">Product library</h2>
+        <p id="heroText">Create products and maintain prices, translations, icons and images.</p>
+      </section>
+
+      <section class="kiosk-admin-toolbar product-toolbar" aria-label="Product filters">
+        <label class="setting-field search-field">
+          <span id="searchLabel">Search</span>
+          <input id="searchInput" type="search" placeholder="Search products">
+        </label>
+        <label class="admin-toggle">
+          <input id="showInactive" type="checkbox">
+          <span id="showInactiveLabel">Show inactive</span>
+        </label>
+      </section>
+
+      <div id="status" class="status" role="status"></div>
+      <section id="productList" class="product-library-grid" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <dialog id="productDialog">
+    <form id="productForm" class="dialog-body">
+      <div class="dialog-head">
+        <h2 id="productDialogTitle">Product</h2>
+        <button type="button" data-close="productDialog" aria-label="Close">×</button>
+      </div>
+
+      <input id="productId" type="hidden">
+
+      <div class="form-grid">
+        <label class="field full">
+          <span id="nameEnLabel">English name</span>
+          <input id="nameEn" maxlength="255" required>
+        </label>
+
+        <label class="field">
+          <span id="nameSvLabel">Swedish name</span>
+          <input id="nameSv" maxlength="255">
+        </label>
+
+        <label class="field">
+          <span id="nameFiLabel">Finnish name</span>
+          <input id="nameFi" maxlength="255">
+        </label>
+
+        <label class="field">
+          <span id="priceLabel">Price (€)</span>
+          <input id="price" type="number" min="0" max="99999999.99" step="0.01" inputmode="decimal" required>
+        </label>
+
+        <label class="field">
+          <span id="iconLabel">Icon</span>
+          <input id="icon" maxlength="100" placeholder="☕">
+        </label>
+
+        <label class="field full">
+          <span id="imageUrlLabel">Image URL</span>
+          <input id="imageUrl" type="url" maxlength="500" placeholder="/images/products/coffee.jpg">
+        </label>
+
+        <section class="product-preview-section full" aria-label="Product preview">
+          <span id="previewLabel" class="preview-label">Preview</span>
+          <div id="productPreview" class="product-preview"></div>
+        </section>
+
+        <label class="admin-toggle full">
+          <input id="productActive" type="checkbox" checked>
+          <span id="activeLabel">Active</span>
+        </label>
+      </div>
+
+      <div class="dialog-actions">
+        <button id="cancelButton" class="secondary" type="button" data-close="productDialog">Cancel</button>
+        <button id="saveButton" class="primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>
