@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Kiosk reports</title>
+  <link rel="stylesheet" href="kiosk-reports.css">
+  <script src="kiosk-reports-ui.js" defer></script>
+</head>
+<body>
+  <div class="report-shell">
+    <header class="report-header">
+      <a class="back-button" href="../index.html" aria-label="Back">‹</a>
+      <div class="header-copy">
+        <h1 data-i18n="title">Café Kiosk reports</h1>
+        <span data-i18n="subtitle">Sales, payroll and external invoicing</span>
+      </div>
+      <select id="languageSelect" class="language-select" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="sv">SV</option>
+        <option value="fi">FI</option>
+      </select>
+    </header>
+
+    <main>
+      <section class="toolbar-card">
+        <div class="preset-buttons" id="presetButtons">
+          <button type="button" data-preset="today" data-i18n="today">Today</button>
+          <button type="button" data-preset="thisWeek" data-i18n="thisWeek">This week</button>
+          <button type="button" data-preset="previousWeek" data-i18n="previousWeek">Previous week</button>
+          <button type="button" data-preset="thisMonth" class="active" data-i18n="thisMonth">This month</button>
+          <button type="button" data-preset="previousMonth" data-i18n="previousMonth">Previous month</button>
+        </div>
+        <div class="date-fields">
+          <label><span data-i18n="from">From</span><input id="fromDate" type="date"></label>
+          <label><span data-i18n="to">To</span><input id="toDate" type="date"></label>
+          <button id="refreshButton" class="primary-button" type="button" data-i18n="refresh">Refresh</button>
+        </div>
+      </section>
+
+      <nav class="report-tabs" aria-label="Reports">
+        <button type="button" class="active" data-tab="overview" data-i18n="overview">Overview</button>
+        <button type="button" data-tab="transactions" data-i18n="transactions">Transactions</button>
+        <button type="button" data-tab="payroll" data-i18n="payroll">Payroll</button>
+        <button type="button" data-tab="external" data-i18n="externalInvoicing">External invoicing</button>
+      </nav>
+
+      <div id="message" class="message" role="status"></div>
+
+      <section id="overviewPanel" class="tab-panel active">
+        <div class="panel-actions">
+          <div>
+            <h2 data-i18n="salesOverview">Sales overview</h2>
+            <p id="overviewPeriod"></p>
+          </div>
+          <label class="compact-field"><span data-i18n="groupBy">Group by</span><select id="groupBy"><option value="day" data-i18n="day">Day</option><option value="week" selected data-i18n="week">Week</option><option value="month" data-i18n="month">Month</option></select></label>
+        </div>
+        <div class="summary-cards">
+          <article><span data-i18n="revenue">Revenue</span><strong id="overviewRevenue">0,00 €</strong></article>
+          <article><span data-i18n="purchases">Purchases</span><strong id="overviewPurchases">0</strong></article>
+          <article><span data-i18n="productsSold">Products sold</span><strong id="overviewProducts">0</strong></article>
+          <article><span data-i18n="employeeSales">Employee sales</span><strong id="overviewEmployee">0,00 €</strong></article>
+          <article><span data-i18n="externalSales">External sales</span><strong id="overviewExternal">0,00 €</strong></article>
+        </div>
+        <div class="overview-grid">
+          <section class="content-card">
+            <div class="card-heading"><h3 data-i18n="salesTrend">Sales trend</h3></div>
+            <div id="trendChart" class="trend-chart"></div>
+          </section>
+          <section class="content-card">
+            <div class="card-heading"><h3 data-i18n="topProducts">Top products</h3></div>
+            <div id="topProducts" class="ranking-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="transactionsPanel" class="tab-panel">
+        <div class="panel-actions">
+          <div><h2 data-i18n="transactions">Transactions</h2><p data-i18n="transactionsHelp">Expand a purchase to inspect its product lines.</p></div>
+          <div class="inline-fields">
+            <label class="compact-field"><span data-i18n="owner">Owner</span><select id="ownerFilter"><option value="" data-i18n="all">All</option><option value="employee" data-i18n="employees">Employees</option><option value="external" data-i18n="external">External</option></select></label>
+            <label class="compact-field"><span data-i18n="status">Status</span><select id="statusFilter"><option value="" data-i18n="all">All</option><option value="Completed" data-i18n="completed">Completed</option><option value="Voided" data-i18n="voided">Voided</option></select></label>
+          </div>
+        </div>
+        <div id="transactionRows" class="transaction-list"></div>
+        <div class="pagination"><button id="previousPage" type="button" data-i18n="previous">Previous</button><span id="pageText"></span><button id="nextPage" type="button" data-i18n="next">Next</button></div>
+      </section>
+
+      <section id="payrollPanel" class="tab-panel">
+        <div class="panel-actions">
+          <div><h2 data-i18n="payrollReport">Payroll report</h2><p data-i18n="payrollHelp">One total per employee for payroll deduction.</p></div>
+          <button id="exportPayroll" class="export-button" type="button" data-i18n="exportCsv">Export CSV</button>
+        </div>
+        <div class="summary-cards three">
+          <article><span data-i18n="employees">Employees</span><strong id="payrollEmployees">0</strong></article>
+          <article><span data-i18n="purchases">Purchases</span><strong id="payrollPurchases">0</strong></article>
+          <article><span data-i18n="total">Total</span><strong id="payrollTotal">0,00 €</strong></article>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="employeeNo">Employee no.</th><th data-i18n="name">Name</th><th class="numeric" data-i18n="purchases">Purchases</th><th class="numeric" data-i18n="total">Total</th></tr></thead><tbody id="payrollRows"></tbody></table></div>
+      </section>
+
+      <section id="externalPanel" class="tab-panel">
+        <div class="panel-actions">
+          <div><h2 data-i18n="externalReport">External invoicing</h2><p data-i18n="externalHelp">Totals for invoiceable external accounts.</p></div>
+          <div class="inline-fields">
+            <label class="compact-field"><span data-i18n="accountMode">Account mode</span><select id="accountMode"><option value="Invoice" data-i18n="invoice">Invoice</option><option value="Postpaid" data-i18n="postpaid">Postpaid</option><option value="Invoice,Postpaid" data-i18n="both">Invoice + postpaid</option></select></label>
+            <button id="exportExternalSummary" class="export-button" type="button" data-i18n="exportSummary">Export summary</button>
+            <button id="exportExternalDetails" class="secondary-button" type="button" data-i18n="exportDetails">Export details</button>
+          </div>
+        </div>
+        <div class="summary-cards three">
+          <article><span data-i18n="accounts">Accounts</span><strong id="externalAccounts">0</strong></article>
+          <article><span data-i18n="purchases">Purchases</span><strong id="externalPurchases">0</strong></article>
+          <article><span data-i18n="total">Total</span><strong id="externalTotal">0,00 €</strong></article>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th data-i18n="company">Company</th><th data-i18n="account">Account</th><th data-i18n="accountMode">Account mode</th><th class="numeric" data-i18n="purchases">Purchases</th><th class="numeric" data-i18n="total">Total</th></tr></thead><tbody id="externalRows"></tbody></table></div>
+        <p class="note" data-i18n="externalNote">Business ID and billing details will be added when the external-account schema is extended.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
