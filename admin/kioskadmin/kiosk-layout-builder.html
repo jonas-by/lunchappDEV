@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Kiosk layout builder</title>
+  <link rel="stylesheet" href="../lunch.css">
+  <link rel="stylesheet" href="cafe-kiosk-admin.css">
+  <script src="kiosk-layout-builder.js" defer></script>
+</head>
+<body>
+  <div class="app-shell kiosk-admin-shell">
+    <header class="app-header kiosk-admin-header">
+      <a class="back-button" href="../index.html" aria-label="Back">‹</a>
+      <div class="header-title">
+        <h1 id="pageTitle">Kiosk layout</h1>
+        <span id="pageSubtitle">Arrange products in two columns</span>
+      </div>
+      <select id="languageSelect" class="language-select admin-language" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="sv">SV</option>
+        <option value="fi">FI</option>
+      </select>
+      <button id="saveButton" class="primary header-action-button" type="button">Save layout</button>
+    </header>
+
+    <main class="kiosk-admin-main layout-builder-main">
+      <section class="admin-welcome kiosk-admin-welcome">
+        <span class="eyebrow">Café Kiosk</span>
+        <h2 id="heroTitle">Kiosk layout builder</h2>
+        <p id="heroText">Drag products into position or use the movement buttons for precise changes.</p>
+      </section>
+
+      <section class="layout-toolbar">
+        <label class="setting-field">
+          <span id="layoutLabel">Layout</span>
+          <select id="layoutSelect"></select>
+        </label>
+        <div class="layout-state">
+          <span id="layoutStateText">No unsaved changes</span>
+          <button id="resetButton" class="secondary" type="button" disabled>Reset changes</button>
+        </div>
+      </section>
+
+      <div id="status" class="status" role="status"></div>
+
+      <div class="layout-builder-grid">
+        <aside class="available-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow" id="libraryEyebrow">Product library</span>
+              <h2 id="availableTitle">Available products</h2>
+            </div>
+            <span id="availableCount" class="count-badge">0</span>
+          </div>
+          <label class="setting-field">
+            <span id="searchLabel">Search</span>
+            <input id="searchInput" type="search" placeholder="Search products">
+          </label>
+          <div id="availableProducts" class="available-products" data-zone="available"></div>
+        </aside>
+
+        <section class="preview-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow" id="previewEyebrow">Live preview</span>
+              <h2 id="previewTitle">Kiosk preview</h2>
+            </div>
+          </div>
+
+          <div class="kiosk-layout-columns">
+            <section class="layout-column" data-column="1">
+              <div class="column-heading"><span id="leftColumnLabel">Left column</span><span id="leftCount">0</span></div>
+              <div id="column1" class="layout-dropzone" data-column="1"></div>
+            </section>
+            <section class="layout-column" data-column="2">
+              <div class="column-heading"><span id="rightColumnLabel">Right column</span><span id="rightCount">0</span></div>
+              <div id="column2" class="layout-dropzone" data-column="2"></div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>
