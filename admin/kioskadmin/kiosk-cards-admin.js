@@ -166,10 +166,12 @@ const status = $('#status');
 const toastElement = $('#toast');
 languageSelect.value = language;
 applyText();
+applyCardPageTranslations();
 languageSelect.addEventListener('change', () => {
   language = languageSelect.value;
   localStorage.setItem('lunch-poc-language-v5', language);
   applyText();
+  applyCardPageTranslations();
   render();
 });
 searchInput.addEventListener('input', render);
@@ -219,3 +221,17 @@ cardForm.addEventListener('submit', async event => {
   }
 });
 load();
+
+
+const cardPageTranslations = {
+  en:{heroTitle:'External cards',heroText:'Assign cards to external account holders and manage card validity.',searchLabel:'Search',dialogTitle:'External card'},
+  sv:{heroTitle:'Externa kort',heroText:'Tilldela kort till externa kortinnehavare och hantera kortens giltighet.',searchLabel:'Sök',dialogTitle:'Externt kort'},
+  fi:{heroTitle:'Ulkoiset kortit',heroText:'Määritä kortit ulkoisille kortinhaltijoille ja hallinnoi korttien voimassaoloa.',searchLabel:'Haku',dialogTitle:'Ulkoinen kortti'}
+};
+function applyCardPageTranslations(){
+  const x=cardPageTranslations[language]||cardPageTranslations.en;
+  const hero=document.querySelector('.kiosk-admin-welcome');
+  if(hero){hero.querySelector('h2').textContent=x.heroTitle;hero.querySelector('p').textContent=x.heroText;}
+  const label=document.querySelector('.kiosk-admin-toolbar .setting-field > span');if(label)label.textContent=x.searchLabel;
+  cardDialogTitle.textContent=x.dialogTitle;
+}
