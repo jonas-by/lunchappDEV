@@ -694,3 +694,54 @@ dialog::backdrop {
   .kiosk-layout-columns { grid-template-columns: 1fr; }
   .header-action-button { display: inline-flex; }
 }
+.toggle-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: #f7f9fa;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #c8d0d6;
+    border-radius: 999px;
+    transition: .2s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: #2f7d4a;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(20px);
+}
