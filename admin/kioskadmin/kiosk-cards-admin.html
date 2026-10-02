@@ -2,76 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Café Kiosk external cards</title>
+  <link rel="stylesheet" href="../lunch.css">
   <link rel="stylesheet" href="cafe-kiosk-admin.css">
   <script src="kiosk-cards-admin.js" defer></script>
 </head>
 <body>
-<main class="admin-page">
-  <header class="admin-header">
-    <a href="../index.html" aria-label="Back">‹</a>
-    <div>
-      <h1 id="pageTitle">External cards</h1>
-      <p id="pageSubtitle">Cards linked to external accounts</p>
-    </div>
-    <div class="header-actions">
-      <select id="languageSelect">
-        <option value="en">EN</option>
-        <option value="sv">SV</option>
-        <option value="fi">FI</option>
-      </select>
-      <button id="newCard" class="primary">New card</button>
-    </div>
-  </header>
+  <div class="app-shell kiosk-admin-shell">
+    <header class="app-header kiosk-admin-header">
+      <a class="back-button" href="../index.html" aria-label="Back">‹</a>
+      <div class="header-title"><h1 id="pageTitle">External cards</h1><span id="pageSubtitle">Cards linked to external accounts</span></div>
+      <select id="languageSelect" class="language-select admin-language" aria-label="Language"><option value="en">EN</option><option value="sv">SV</option><option value="fi">FI</option></select>
+      <button id="newCard" class="header-link header-action-button" type="button">New card</button>
+    </header>
 
-  <section class="toolbar cards-toolbar">
-    <input id="searchInput" type="search" placeholder="Search by card holder, card number or company">
-    <label class="checkbox"><input id="showInactive" type="checkbox"> <span id="inactiveLabel">Show inactive</span></label>
-  </section>
+    <main class="kiosk-admin-main">
+      <section class="admin-welcome kiosk-admin-welcome">
+        <span class="eyebrow">Café Kiosk</span>
+        <h2>External cards</h2>
+        <p>Assign cards to external account holders and manage card validity.</p>
+      </section>
+      <section class="kiosk-admin-toolbar cards-toolbar" aria-label="Card filters">
+        <label class="setting-field search-field"><span>Search</span><input id="searchInput" type="search" placeholder="Search by card holder, card number or company"></label>
+        <label class="admin-toggle"><input id="showInactive" type="checkbox"><span id="inactiveLabel">Show inactive</span></label>
+      </section>
+      <div id="status" class="status"></div>
+      <section id="cardList" class="card-grid" aria-live="polite"></section>
+    </main>
+  </div>
 
-  <div id="status" class="status"></div>
-  <section id="cardList" class="card-grid"></section>
-</main>
-
-<dialog id="cardDialog">
-  <form id="cardForm" class="dialog-body">
-    <div class="dialog-head">
-      <h2 id="cardDialogTitle">External card</h2>
-      <button type="button" data-close="cardDialog">×</button>
-    </div>
-    <input id="cardId" type="hidden">
-    <div class="form-grid">
-      <label class="field">
-        <span id="cardNumberLabel">Card number</span>
-        <input id="cardNumber" maxlength="100" required autocomplete="off">
-      </label>
-      <label class="field">
-        <span id="cardHolderNameLabel">Card holder name</span>
-        <input id="cardHolderName" maxlength="200" required autocomplete="name">
-      </label>
-      <label class="field full">
-        <span id="externalAccountLabel">External account</span>
-        <select id="externalAccountId" required></select>
-      </label>
-      <label class="field">
-        <span id="validFromLabel">Valid from</span>
-        <input id="validFrom" type="datetime-local">
-      </label>
-      <label class="field">
-        <span id="validUntilLabel">Valid until</span>
-        <input id="validUntil" type="datetime-local">
-      </label>
-      <label class="checkbox full">
-        <input id="cardActive" type="checkbox" checked> <span id="activeLabel">Active</span>
-      </label>
-    </div>
-    <div class="dialog-actions">
-      <button id="cancelButton" type="button" class="secondary" data-close="cardDialog">Cancel</button>
-      <button id="saveButton" type="submit" class="primary">Save</button>
-    </div>
-  </form>
-</dialog>
-<div id="toast" class="toast"></div>
+  <dialog id="cardDialog">
+    <form id="cardForm" class="dialog-body">
+      <div class="dialog-head"><h2 id="cardDialogTitle">External card</h2><button type="button" data-close="cardDialog" aria-label="Close">×</button></div>
+      <input id="cardId" type="hidden">
+      <div class="form-grid">
+        <label class="field"><span id="cardNumberLabel">Card number</span><input id="cardNumber" maxlength="100" required autocomplete="off"></label>
+        <label class="field"><span id="cardHolderNameLabel">Card holder name</span><input id="cardHolderName" maxlength="200" required autocomplete="name"></label>
+        <label class="field full"><span id="externalAccountLabel">External account</span><select id="externalAccountId" required></select></label>
+        <label class="field"><span id="validFromLabel">Valid from</span><input id="validFrom" type="datetime-local"></label>
+        <label class="field"><span id="validUntilLabel">Valid until</span><input id="validUntil" type="datetime-local"></label>
+        <label class="admin-toggle full"><input id="cardActive" type="checkbox" checked><span id="activeLabel">Active</span></label>
+      </div>
+      <div class="dialog-actions"><button id="cancelButton" type="button" class="secondary" data-close="cardDialog">Cancel</button><button id="saveButton" type="submit" class="primary">Save</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast"></div>
 </body>
 </html>

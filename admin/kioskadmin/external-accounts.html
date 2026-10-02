@@ -1,205 +1,116 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <title>Café Kiosk external accounts</title>
-    <link href="cafe-kiosk-admin.css" rel="stylesheet" />
-    <script defer="" src="external-accounts.js"></script>
-  </head>
-  <body>
-    <main class="admin-page">
-      <header class="admin-header">
-        <a aria-label="Back" href="../index.html"> ‹ </a>
-        <div>
-          <h1 id="pageTitle">External accounts</h1>
-          <p id="pageSubtitle">Prepaid, postpaid and invoice accounts</p>
-        </div>
-        <div class="header-actions">
-          <select id="languageSelect">
-            <option value="en">EN</option>
-            <option value="sv">SV</option>
-            <option value="fi">FI</option>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Kiosk external accounts</title>
+  <link rel="stylesheet" href="../lunch.css">
+  <link rel="stylesheet" href="cafe-kiosk-admin.css">
+  <script src="external-accounts.js" defer></script>
+</head>
+<body>
+  <div class="app-shell kiosk-admin-shell">
+    <header class="app-header kiosk-admin-header">
+      <a class="back-button" href="../index.html" aria-label="Back">‹</a>
+      <div class="header-title">
+        <h1 id="pageTitle">External accounts</h1>
+        <span id="pageSubtitle">Prepaid, postpaid and invoice accounts</span>
+      </div>
+      <select id="languageSelect" class="language-select admin-language" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="sv">SV</option>
+        <option value="fi">FI</option>
+      </select>
+      <button id="newAccount" class="header-link header-action-button" type="button">New account</button>
+    </header>
+
+    <main class="kiosk-admin-main">
+      <section class="admin-welcome kiosk-admin-welcome">
+        <span class="eyebrow">Café Kiosk</span>
+        <h2>External accounts</h2>
+        <p>Manage prepaid balances, postpaid billing accounts and linked cards.</p>
+      </section>
+
+      <section class="kiosk-admin-toolbar" aria-label="Account filters">
+        <label class="setting-field search-field">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="Search accounts">
+        </label>
+        <label class="setting-field">
+          <span>Account mode</span>
+          <select id="modeFilter">
+            <option value="">All modes</option>
+            <option>Prepaid</option>
+            <option>Postpaid</option>
+            <option>Invoice</option>
           </select>
-          <button class="primary" id="newAccount">New account</button>
-        </div>
-      </header>
-      <section class="toolbar">
-        <input id="searchInput" placeholder="Search" type="search" />
-        <select id="modeFilter">
-          <option value="">All modes</option>
-          <option>Prepaid</option>
-          <option>Postpaid</option>
-          <option>Invoice</option>
-        </select>
-        <label class="checkbox">
-          <input id="showInactive" type="checkbox" />
-          <span id="inactiveLabel"> Show inactive </span>
+        </label>
+        <label class="admin-toggle">
+          <input id="showInactive" type="checkbox">
+          <span id="inactiveLabel">Show inactive</span>
         </label>
       </section>
-      <div class="status" id="status"></div>
-      <section class="card-grid" id="accountList"></section>
+
+      <div id="status" class="status"></div>
+      <section id="accountList" class="card-grid" aria-live="polite"></section>
     </main>
-    <dialog id="accountDialog">
-      <form class="dialog-body" id="accountForm">
-        <div class="dialog-head">
-          <h2 id="accountDialogTitle">External account</h2>
-          <button data-close="accountDialog" type="button">×</button>
-        </div>
-        <input id="accountId" type="hidden" />
-        <div class="form-grid">
-          <label class="field">
-            <span> Display name </span>
-            <input id="displayName" maxlength="150" required="" />
-          </label>
-          <label class="field">
-            <span> Company </span>
-            <input id="companyName" maxlength="200" />
-          </label>
-          <label class="field">
-            <span> Account mode </span>
-            <select id="accountMode" required="">
-              <option>Prepaid</option>
-              <option>Postpaid</option>
-              <option>Invoice</option>
-            </select>
-          </label>
-          <label class="field credit-field">
-            <span> Credit limit (€) </span>
-            <input id="creditLimit" min="0" step="0.01" type="number" />
-          </label>
-          <label class="field">
-            <span> External reference </span>
-            <input id="externalReference" maxlength="100" />
-          </label>
-          <label class="field">
-            <span> Invoice reference </span>
-            <input id="invoiceReference" maxlength="100" />
-          </label>
-          <label class="field">
-            <span> Contact name </span>
-            <input id="contactName" maxlength="150" />
-          </label>
-          <label class="field">
-            <span> Contact email </span>
-            <input id="contactEmail" maxlength="254" type="email" />
-          </label>
-          <label class="field">
-            <span> Valid from </span>
-            <input id="validFrom" type="date" />
-          </label>
-          <label class="field">
-            <span> Valid until </span>
-            <input id="validUntil" type="date" />
-          </label>
-          <label class="field full">
-            <span> Notes </span>
-            <textarea id="notes" maxlength="1000"></textarea>
-          </label>
-          <label class="checkbox full">
-            <input checked="" id="accountActive" type="checkbox" />
-            <span> Active </span>
-          </label>
-          <section class="initial-card-section full" id="initialCardSection">
-            <label class="checkbox initial-card-toggle">
-              <input checked="" id="createInitialCard" type="checkbox" />
-              <span> Create and link an initial card </span>
-            </label>
-            <div class="initial-card-grid" id="initialCardFields">
-              <label class="field">
-                <span> Card number </span>
-                <input
-                  autocomplete="off"
-                  id="initialCardNumber"
-                  maxlength="100"
-                />
-              </label>
-              <label class="field">
-                <span> Card holder name </span>
-                <input
-                  autocomplete="name"
-                  id="initialCardHolderName"
-                  maxlength="200"
-                />
-              </label>
-            </div>
-            <p class="field-hint">
-              Additional cards can be added later in External Cards.
-            </p>
-          </section>
-        </div>
-        <div class="dialog-actions">
-          <button class="secondary" data-close="accountDialog" type="button">
-            Cancel
-          </button>
-          <button class="primary" type="submit">Save</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="moneyDialog">
-      <form class="dialog-body" id="moneyForm">
-        <div class="dialog-head">
-          <h2 id="moneyTitle">Account transaction</h2>
-          <button data-close="moneyDialog" type="button">×</button>
-        </div>
-        <input id="moneyAccountId" type="hidden" />
-        <input id="moneyOperation" type="hidden" />
-        <div class="form-grid">
-          <label class="field">
-            <span> Amount (€) </span>
-            <input
-              id="moneyAmount"
-              min="0.01"
-              required=""
-              step="0.01"
-              type="number"
-            />
-          </label>
-          <label class="field">
-            <span> Recorded by </span>
-            <input
-              id="moneyCreatedBy"
-              maxlength="100"
-              required=""
-              value="Kitchen"
-            />
-          </label>
-          <label class="field full">
-            <span> Description </span>
-            <input id="moneyDescription" maxlength="500" />
-          </label>
-          <label class="field">
-            <span> Settlement reference </span>
-            <input id="moneyReference" maxlength="100" />
-          </label>
-          <label class="field invoice-number">
-            <span> Invoice number </span>
-            <input id="moneyInvoice" maxlength="100" />
-          </label>
-        </div>
-        <div class="dialog-actions">
-          <button class="secondary" data-close="moneyDialog" type="button">
-            Cancel
-          </button>
-          <button class="primary" type="submit">Save transaction</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="ledgerDialog">
-      <div class="dialog-body">
-        <div class="dialog-head">
-          <h2 id="ledgerTitle">Ledger</h2>
-          <button data-close="ledgerDialog" type="button">×</button>
-        </div>
-        <div class="metrics" id="ledgerSummary"></div>
-        <div class="ledger" id="ledgerList"></div>
-        <div class="dialog-actions">
-          <button class="secondary" data-close="ledgerDialog" type="button">
-            Close
-          </button>
-        </div>
+  </div>
+
+  <dialog id="accountDialog">
+    <form id="accountForm" class="dialog-body">
+      <div class="dialog-head">
+        <h2 id="accountDialogTitle">External account</h2>
+        <button type="button" data-close="accountDialog" aria-label="Close">×</button>
       </div>
-    </dialog>
-    <div class="toast" id="toast"></div>
-  </body>
+      <input id="accountId" type="hidden">
+      <div class="form-grid">
+        <label class="field"><span>Display name</span><input id="displayName" maxlength="150" required></label>
+        <label class="field"><span>Company</span><input id="companyName" maxlength="200"></label>
+        <label class="field"><span>Account mode</span><select id="accountMode" required><option>Prepaid</option><option>Postpaid</option><option>Invoice</option></select></label>
+        <label class="field credit-field"><span>Credit limit (€)</span><input id="creditLimit" type="number" min="0" step="0.01"></label>
+        <label class="field"><span>External reference</span><input id="externalReference" maxlength="100"></label>
+        <label class="field"><span>Invoice reference</span><input id="invoiceReference" maxlength="100"></label>
+        <label class="field"><span>Contact name</span><input id="contactName" maxlength="150"></label>
+        <label class="field"><span>Contact email</span><input id="contactEmail" type="email" maxlength="254"></label>
+        <label class="field"><span>Valid from</span><input id="validFrom" type="date"></label>
+        <label class="field"><span>Valid until</span><input id="validUntil" type="date"></label>
+        <label class="field full"><span>Notes</span><textarea id="notes" maxlength="1000"></textarea></label>
+        <label class="admin-toggle full"><input id="accountActive" type="checkbox" checked><span>Active</span></label>
+        <section id="initialCardSection" class="initial-card-section full">
+          <label class="admin-toggle initial-card-toggle"><input id="createInitialCard" type="checkbox" checked><span>Create and link an initial card</span></label>
+          <div id="initialCardFields" class="initial-card-grid">
+            <label class="field"><span>Card number</span><input id="initialCardNumber" maxlength="100" autocomplete="off"></label>
+            <label class="field"><span>Card holder name</span><input id="initialCardHolderName" maxlength="200" autocomplete="name"></label>
+          </div>
+          <p class="field-hint">Additional cards can be added later in External Cards.</p>
+        </section>
+      </div>
+      <div class="dialog-actions"><button class="secondary" type="button" data-close="accountDialog">Cancel</button><button class="primary" type="submit">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="moneyDialog">
+    <form id="moneyForm" class="dialog-body">
+      <div class="dialog-head"><h2 id="moneyTitle">Account transaction</h2><button type="button" data-close="moneyDialog" aria-label="Close">×</button></div>
+      <input id="moneyAccountId" type="hidden"><input id="moneyOperation" type="hidden">
+      <div class="form-grid">
+        <label class="field"><span>Amount (€)</span><input id="moneyAmount" type="number" min="0.01" step="0.01" required></label>
+        <label class="field"><span>Recorded by</span><input id="moneyCreatedBy" maxlength="100" value="Kitchen" required></label>
+        <label class="field full"><span>Description</span><input id="moneyDescription" maxlength="500"></label>
+        <label class="field"><span>Settlement reference</span><input id="moneyReference" maxlength="100"></label>
+        <label class="field invoice-number"><span>Invoice number</span><input id="moneyInvoice" maxlength="100"></label>
+      </div>
+      <div class="dialog-actions"><button class="secondary" type="button" data-close="moneyDialog">Cancel</button><button class="primary" type="submit">Save transaction</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="ledgerDialog">
+    <div class="dialog-body">
+      <div class="dialog-head"><h2 id="ledgerTitle">Ledger</h2><button type="button" data-close="ledgerDialog" aria-label="Close">×</button></div>
+      <div id="ledgerSummary" class="metrics"></div><div id="ledgerList" class="ledger"></div>
+      <div class="dialog-actions"><button class="secondary" type="button" data-close="ledgerDialog">Close</button></div>
+    </div>
+  </dialog>
+  <div id="toast" class="toast"></div>
+</body>
 </html>
