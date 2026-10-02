@@ -56,7 +56,7 @@ function escapeHtml(value = '') {
 
 function localizedName(product) {
   const preferred = language === 'sv' ? product.nameSv : language === 'fi' ? product.nameFi : product.nameEn;
-  return preferred || product.nameEn || product.nameSv || product.nameFi || t().fallbackName;
+  return preferred || product.nameSv || product.nameEn || product.nameFi || t().fallbackName;
 }
 
 function formatPrice(value) {
@@ -131,7 +131,6 @@ function productCard(product) {
       <div class="product-card-title-row">
         <div>
           <h2>${escapeHtml(name)}</h2>
-          <p>${escapeHtml(product.nameEn || '')}</p>
         </div>
         <strong class="product-price">${formatPrice(product.price)}</strong>
       </div>
