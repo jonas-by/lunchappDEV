@@ -12,9 +12,10 @@ const copy = {
 const t=()=>copy[language]||copy.sv;
 function applyText(){const x=t();document.documentElement.lang=language;loginTitle.textContent=x.title;loginHelp.textContent=x.help;cardLabel.textContent=x.card;loginButton.textContent=x.button;languageLabel.textContent=x.language;languageSelect.value=language;}
 function message(value,type=''){loginMessage.textContent=value;loginMessage.className=`login-message ${type}`;}
+function normalizeCardNumber(value){const digits=String(value??'').replace(/\D/g,'');return digits.length>5?digits.slice(-5):digits;}
 async function login(cardNumber){
   if(submitting)return;
-  const clean=String(cardNumber||'').trim();
+  const clean=normalizeCardNumber(cardNumber);
   if(!clean)return;
   submitting=true;loginButton.disabled=true;message(t().checking,'loading');
   try{
