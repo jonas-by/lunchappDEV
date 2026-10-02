@@ -92,11 +92,13 @@
           <div id="productPreview" class="product-preview"></div>
         </section>
 
-        <label class="admin-toggle full">
-          <input id="productActive" type="checkbox" checked>
-          <span id="activeLabel">Active</span>
-        </label>
-      </div>
+<label class="toggle-field full">
+    <span id="activeLabel">Active</span>
+    <label class="switch">
+        <input id="productActive" type="checkbox" checked>
+        <span class="slider"></span>
+    </label>
+</label>
 
       <div class="dialog-actions">
         <button id="cancelButton" class="secondary" type="button" data-close="productDialog">Cancel</button>
