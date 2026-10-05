@@ -110,6 +110,7 @@ function render() {
                 <td>${employee.cardNumber ? `<code>${esc(employee.cardNumber)}</code>` : '<span class="muted-value">-</span>'}</td>
                 <td><span class="meal-category-badge ${employee.active ? 'vegetarian' : 'inactive'}">${t(employee.active ? 'Active' : 'Inactive')}</span></td>
                 <td class="action-column">
+                    ${employee.active ? `<button class="table-action" type="button" data-add-lunch="${employee.employeeNo}">${t('Add lunch')}</button>` : ''}
                     <button class="table-action" type="button" data-edit="${employee.employeeNo}">${t('Edit')}</button>
                     <button class="table-action ${employee.active ? 'danger' : ''}" type="button" data-toggle="${employee.employeeNo}">
                         ${t(employee.active ? 'Disable' : 'Restore')}
@@ -204,7 +205,39 @@ form.addEventListener('submit', async event => {
     }
 });
 
+const manualLunchDialog = document.querySelector('#manualLunchDialog');
+const manualLunchForm = document.querySelector('#manualLunchForm');
+function localDate() { const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function openManualLunch(employeeNo) {
+    const employee=employees.find(item=>item.employeeNo===employeeNo); if(!employee) return;
+    document.querySelector('#manualLunchEmployeeNo').value=employeeNo;
+    document.querySelector('#manualLunchEmployee').textContent=`${employeeNo} · ${fullName(employee)}`;
+    document.querySelector('#manualLunchDate').value=localDate();
+    document.querySelector('#manualLunchQuantity').value='1';
+    document.querySelector('#manualLunchError').hidden=true;
+    manualLunchDialog.showModal();
+}
+manualLunchForm.addEventListener('submit', async event => {
+    if (event.submitter?.value === 'cancel') return;
+    event.preventDefault();
+    const button=document.querySelector('#saveManualLunch'), errorBox=document.querySelector('#manualLunchError');
+    button.disabled=true; errorBox.hidden=true;
+    try {
+        await apiFetch('/manual-lunch-adjustments',{method:'POST',body:JSON.stringify({
+            employeeNo:Number(document.querySelector('#manualLunchEmployeeNo').value),
+            menuDate:document.querySelector('#manualLunchDate').value,
+            quantity:Number(document.querySelector('#manualLunchQuantity').value),
+            reason:null
+        })});
+        manualLunchDialog.close(); show(t('Lunch added'));
+    } catch(error) { errorBox.textContent=error.message; errorBox.hidden=false; }
+    finally { button.disabled=false; }
+});
+
 rows.addEventListener('click', event => {
+    const lunchButton=event.target.closest('[data-add-lunch]');
+    if(lunchButton){openManualLunch(Number(lunchButton.dataset.addLunch));return;}
+
     const editButton = event.target.closest('[data-edit]');
     if (editButton) {
         const employeeNo = Number(editButton.dataset.edit);

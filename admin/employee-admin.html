@@ -120,6 +120,24 @@
         </form>
     </dialog>
 
+    <dialog id="manualLunchDialog">
+        <form method="dialog" id="manualLunchForm">
+            <div class="dialog-heading">
+                <h2>Add lunch</h2>
+                <button value="cancel" aria-label="Close">×</button>
+            </div>
+            <input id="manualLunchEmployeeNo" type="hidden">
+            <p id="manualLunchEmployee" class="poc-note"></p>
+            <label>Lunch date<input id="manualLunchDate" type="date" required></label>
+            <label>Quantity<input id="manualLunchQuantity" type="number" min="1" max="50" step="1" value="1" required></label>
+            <div id="manualLunchError" class="employee-form-error" role="alert" hidden></div>
+            <div class="dialog-actions">
+                <button value="cancel" class="secondary-button">Cancel</button>
+                <button id="saveManualLunch" value="default" class="primary-admin-button">Add lunch</button>
+            </div>
+        </form>
+    </dialog>
+
     <div class="toast" id="toast"></div>
 </div>
 </body>
