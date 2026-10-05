@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>External lunch prices</title>
+  <link rel="stylesheet" href="external-lunch-prices.css">
+  <script src="external-lunch-prices.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header><a href="external-accounts.html" class="back">‹</a><div><h1>External lunch prices</h1><p>Effective-dated prices used for prepaid, postpaid and invoice accounts.</p></div></header>
+    <section class="card current"><span>Current price</span><strong id="currentPrice">Loading...</strong><small id="currentDate"></small></section>
+    <section class="card">
+      <h2>Add new price</h2>
+      <p>Do not edit old prices. Add a new price with the date it becomes valid.</p>
+      <form id="priceForm">
+        <label>Price (€)<input id="price" inputmode="decimal" placeholder="11,35" required></label>
+        <label>Valid from<input id="validFrom" type="date" required></label>
+        <button id="saveButton" type="submit">Save price</button>
+      </form>
+      <p id="error" class="error" hidden></p>
+    </section>
+    <section class="card"><h2>Price history</h2><div class="table-wrap"><table><thead><tr><th>Valid from</th><th>Price</th><th>Created</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+  </main>
+</body>
+</html>

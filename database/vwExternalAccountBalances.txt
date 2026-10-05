@@ -1,0 +1,39 @@
+Text
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/* ================================================================
+   Convenience view: current external-account balance
+   Positive = available prepaid value
+   Negative = amount outstanding
+   ================================================================ */
+CREATE   VIEW dbo.vwExternalAccountBalances
+AS
+    SELECT
+        a.ExternalAccountID,
+        a.DisplayName,
+        a.CompanyName,
+        a.AccountMode,
+        a.CreditLimitCents,
+        COALESCE(SUM(l.AmountCents), 0) AS BalanceCents,
+        CASE
+            WHEN a.AccountMode = N'Prepaid'
+                THEN COALESCE(SUM(l.AmountCents), 0)
+            ELSE 0
+        END AS AvailablePrepaidCents,
+        CASE
+            WHEN COALESCE(SUM(l.AmountCents), 0) < 0
+                THEN -COALESCE(SUM(l.AmountCents), 0)
+            ELSE 0
+        END AS OutstandingCents
+    FROM dbo.ExternalAccounts a
+    LEFT JOIN dbo.ExternalAccountLedger l
+        ON l.ExternalAccountID = a.ExternalAccountID
+    GROUP BY
+        a.ExternalAccountID,
+        a.DisplayName,
+        a.CompanyName,
+        a.AccountMode,
+        a.CreditLimitCents;
+
+
+Completion time: 2026-10-05T14:48:02.2447361+03:00

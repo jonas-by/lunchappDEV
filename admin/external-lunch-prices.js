@@ -1,0 +1,9 @@
+const API = 'https://lunchapp-api-dev-bxf8hff5hmb7g5dv.swedencentral-01.azurewebsites.net/api/external-lunch-prices';
+const $ = s => document.querySelector(s);
+let prices = [];
+function euro(cents){return new Intl.NumberFormat('fi-FI',{style:'currency',currency:'EUR'}).format(Number(cents||0)/100)}
+function date(v){return v ? new Date(`${String(v).slice(0,10)}T00:00:00`).toLocaleDateString('fi-FI') : '-'}
+async function api(options={}){const response=await fetch(API,{headers:{Accept:'application/json','Content-Type':'application/json'},...options});const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.details||body.error||`HTTP ${response.status}`);return body}
+async function load(){const body=await api();prices=body.prices||[];$('#currentPrice').textContent=body.current?euro(body.current.priceCents):'-';$('#currentDate').textContent=body.current?`Valid from ${date(body.current.validFrom)}`:'';$('#rows').innerHTML=prices.length?prices.map(x=>`<tr><td>${date(x.validFrom)}</td><td><strong>${euro(x.priceCents)}</strong></td><td>${x.createdAt?new Date(x.createdAt).toLocaleString('fi-FI'):'-'}</td></tr>`).join(''):'<tr><td colspan="3">No prices</td></tr>'}
+$('#priceForm').addEventListener('submit',async event=>{event.preventDefault();const button=$('#saveButton'),error=$('#error');error.hidden=true;const value=$('#price').value.trim().replace(',','.');const cents=Math.round(Number(value)*100);button.disabled=true;try{await api({method:'POST',body:JSON.stringify({priceCents:cents,validFrom:$('#validFrom').value})});$('#price').value='';await load()}catch(e){error.textContent=e.message;error.hidden=false}finally{button.disabled=false}});
+load().catch(e=>{const error=$('#error');error.textContent=e.message;error.hidden=false});
