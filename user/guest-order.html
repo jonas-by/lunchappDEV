@@ -9,6 +9,7 @@
   <script src="lunch.js" defer></script>
 </head>
 <body data-order-type="guest">
+<script>try{const u=JSON.parse(localStorage.getItem('lunch-poc-current-user-v17')||'null');if(u?.ownerType==='external')location.replace('index.html');}catch{location.replace('index.html');}</script>
 <div class="app-shell">
   <header class="app-header">
     <a class="back-button" href="index.html" aria-label="Back to own lunch order">‹</a>
