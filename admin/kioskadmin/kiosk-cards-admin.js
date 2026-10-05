@@ -10,7 +10,7 @@ const translations = {
   en: {
     title: 'External cards', subtitle: 'Cards linked to external accounts', newCard: 'New card',
     search: 'Search by card holder, card number or company', inactive: 'Show inactive', edit: 'Edit',
-    deactivate: 'Deactivate', validity: 'Validity', none: 'No external cards found', saved: 'Card saved',
+    deactivate: 'Deactivate', balance: 'Balance', outstanding: 'Outstanding', available: 'Available', validity: 'Validity', none: 'No external cards found', saved: 'Card saved',
     disabled: 'Card deactivated', confirm: 'Deactivate this card?', loading: 'Loading cards...',
     noAccounts: 'Create an active external account before adding a card.', card: 'Card number',
     holder: 'Card holder name', account: 'External account', from: 'Valid from', until: 'Valid until',
@@ -19,7 +19,7 @@ const translations = {
   sv: {
     title: 'Externa kort', subtitle: 'Kort kopplade till externa konton', newCard: 'Nytt kort',
     search: 'Sök på kortinnehavare, kortnummer eller företag', inactive: 'Visa inaktiva', edit: 'Redigera',
-    deactivate: 'Inaktivera', validity: 'Giltighet', none: 'Inga externa kort hittades', saved: 'Kortet sparades',
+    deactivate: 'Inaktivera', balance: 'Saldo', outstanding: 'Utestående', available: 'Tillgängligt', validity: 'Giltighet', none: 'Inga externa kort hittades', saved: 'Kortet sparades',
     disabled: 'Kortet inaktiverades', confirm: 'Inaktivera kortet?', loading: 'Laddar kort...',
     noAccounts: 'Skapa ett aktivt externt konto innan ett kort läggs till.', card: 'Kortnummer',
     holder: 'Kortinnehavarens namn', account: 'Externt konto', from: 'Giltigt från', until: 'Giltigt till',
@@ -28,7 +28,7 @@ const translations = {
   fi: {
     title: 'Ulkoiset kortit', subtitle: 'Ulkoisiin tileihin liitetyt kortit', newCard: 'Uusi kortti',
     search: 'Hae kortinhaltijalla, korttinumerolla tai yrityksellä', inactive: 'Näytä passiiviset', edit: 'Muokkaa',
-    deactivate: 'Poista käytöstä', validity: 'Voimassaolo', none: 'Ulkoisia kortteja ei löytynyt', saved: 'Kortti tallennettiin',
+    deactivate: 'Poista käytöstä', balance: 'Saldo', outstanding: 'Avoinna', available: 'Käytettävissä', validity: 'Voimassaolo', none: 'Ulkoisia kortteja ei löytynyt', saved: 'Kortti tallennettiin',
     disabled: 'Kortti poistettiin käytöstä', confirm: 'Poistetaanko kortti käytöstä?', loading: 'Ladataan kortteja...',
     noAccounts: 'Luo aktiivinen ulkoinen tili ennen kortin lisäämistä.', card: 'Kortin numero',
     holder: 'Kortinhaltijan nimi', account: 'Ulkoinen tili', from: 'Voimassa alkaen', until: 'Voimassa asti',
@@ -67,6 +67,7 @@ function applyText() {
   cancelButton.textContent = x.cancel;
   saveButton.textContent = x.save;
 }
+function euro(cents) { return new Intl.NumberFormat(language === 'sv' ? 'sv-FI' : language === 'fi' ? 'fi-FI' : 'en-FI', { style: 'currency', currency: 'EUR' }).format(Number(cents || 0) / 100); }
 function validity(card) {
   const from = card.validFrom ? new Date(card.validFrom).toLocaleString() : '∞';
   const until = card.validUntil ? new Date(card.validUntil).toLocaleString() : '∞';
@@ -100,6 +101,8 @@ function render() {
         </div>
       </div>
       <div class="metrics">
+        <div class="metric"><span>${x.balance}</span><strong class="${Number(card.balanceCents) < 0 ? 'negative' : Number(card.balanceCents) > 0 ? 'positive' : ''}">${euro(card.balanceCents)}</strong></div>
+        <div class="metric"><span>${card.accountMode === 'Prepaid' ? x.available : x.outstanding}</span><strong class="${Number(card.outstandingCents) > 0 ? 'negative' : Number(card.availablePrepaidCents) > 0 ? 'positive' : ''}">${euro(card.accountMode === 'Prepaid' ? card.availablePrepaidCents : card.outstandingCents)}</strong></div>
         <div class="metric"><span>${x.validity}</span><strong style="font-size:12px">${esc(validity(card))}</strong></div>
       </div>
     </article>`;
