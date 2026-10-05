@@ -110,9 +110,9 @@ function render() {
                 <td>${employee.cardNumber ? `<code>${esc(employee.cardNumber)}</code>` : '<span class="muted-value">-</span>'}</td>
                 <td><span class="meal-category-badge ${employee.active ? 'vegetarian' : 'inactive'}">${t(employee.active ? 'Active' : 'Inactive')}</span></td>
                 <td class="action-column">
-                    ${employee.active ? `<button class="table-action" type="button" data-add-lunch="${employee.employeeNo}">${t('Add lunch')}</button>` : ''}
-                    <button class="table-action" type="button" data-edit="${employee.employeeNo}">${t('Edit')}</button>
-                    <button class="table-action ${employee.active ? 'danger' : ''}" type="button" data-toggle="${employee.employeeNo}">
+                    ${employee.active ? `<button class="table-action icon-action lunch-action" title="${t('Add lunch')}" aria-label="${t('Add lunch')}" type="button" data-add-lunch="${employee.employeeNo}">🍽️</button>` : ''}
+                    <button class="table-action icon-action edit-action" title="${t('Edit')}" aria-label="${t('Edit')}" type="button" data-edit="${employee.employeeNo}">✏️</button>
+                    <button class="table-action icon-action ${employee.active ? 'danger disable-action' : 'restore-action'}" title="${t(employee.active ? 'Disable' : 'Restore')}" aria-label="${t(employee.active ? 'Disable' : 'Restore')}" type="button" data-toggle="${employee.employeeNo}">
                         ${t(employee.active ? 'Disable' : 'Restore')}
                     </button>
                     ${!employee.active ? `<button class="table-action danger" type="button" data-hard-delete="${employee.employeeNo}">${t('Delete permanently')}</button>` : ''}

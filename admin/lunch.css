@@ -167,3 +167,6 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 .danger-button:disabled{opacity:.55;cursor:wait}
 @media(max-width:620px){#mealSummary .meal-expand-button{grid-template-columns:18px minmax(0,1fr) 52px;gap:10px;padding:13px 12px}#mealSummary .portion-count{min-width:52px}#mealSummary .meal-people{padding:15px 14px 17px 40px}#mealSummary .person-order{align-items:flex-start}#mealSummary .person-order-actions{gap:8px}.cancel-order-context{grid-template-columns:1fr}}
 @media print{#mealSummary .meal-people{display:block!important}.cancel-order-button,.cancel-order-dialog{display:none!important}}
+
+
+.action-column{white-space:nowrap}.icon-action{min-width:38px;width:38px;padding:8px 0;text-align:center;font-size:16px}.lunch-action{background:#e6f0fb;color:#155b87}.edit-action{background:#eef2f7}.disable-action{background:#fef2f2}.restore-action{background:#ecfdf5}
