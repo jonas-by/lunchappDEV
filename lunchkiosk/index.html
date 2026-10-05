@@ -1,1 +1,42 @@
-<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Lunchkiosk</title><link rel="stylesheet" href="lunchkiosk.css"><script src="card-login.js" defer></script></head><body><main class="login-shell"><section class="login-card"><select id="languageSelect"><option value="sv">SV</option><option value="fi">FI</option><option value="en">EN</option></select><h1 id="title">Lunchkiosk</h1><p id="intro"></p><form id="cardForm"><label id="cardLabel" for="cardInput"></label><input id="cardInput" inputmode="numeric" autocomplete="off" autofocus><button id="loginButton" type="submit"></button></form><p id="message" class="message" role="alert"></p></section></main></body></html>
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Lunchkiosk</title>
+  <link rel="stylesheet" href="lunchkiosk.css">
+  <script src="card-login.js" defer></script>
+  <style>
+    .login-card { text-align: center; }
+    .login-mark { width: 68px; height: 68px; margin: 0 auto 8px; border-radius: 20px; display: grid; place-items: center; background: #2d6592; color: #fff; font-size: 34px; }
+    .eyebrow { margin: 0 0 26px; color: #59636d; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .login-card h1 { margin: 0 0 22px; }
+    .login-card > p:not(.eyebrow):not(.message) { margin: 0 0 26px; color: #66707a; }
+    .login-card form { text-align: left; }
+    .login-card form button { width: 100%; }
+    .message { min-height: 24px; }
+    .login-language { display: block; margin: 26px auto 0; }
+  </style>
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="login-mark" aria-hidden="true">🍽️</div>
+      <p class="eyebrow">Lunchkiosk</p>
+      <h1 id="title">Lunchkiosk</h1>
+      <p id="intro"></p>
+      <form id="cardForm" autocomplete="off">
+        <label id="cardLabel" for="cardInput"></label>
+        <input id="cardInput" inputmode="numeric" autocomplete="off" autofocus required>
+        <button id="loginButton" type="submit"></button>
+      </form>
+      <p id="message" class="message" role="status"></p>
+      <select id="languageSelect" class="login-language" aria-label="Språk">
+        <option value="en">English</option>
+        <option value="sv">Svenska</option>
+        <option value="fi">Suomi</option>
+      </select>
+    </section>
+  </main>
+</body>
+</html>
