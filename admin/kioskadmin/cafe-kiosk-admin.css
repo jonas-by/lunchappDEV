@@ -745,3 +745,44 @@ dialog::backdrop {
 .switch input:checked + .slider:before {
     transform: translateX(20px);
 }
+
+/* Product image library, picker and cropper */
+.image-field { padding: 14px; background: #f7f9fa; border: 1px solid var(--line); border-radius: 11px; }
+.image-field-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.field-title { display: block; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.image-field-heading small, .dialog-head p, .field-hint { display: block; margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+.image-editor-row { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 14px; align-items: center; }
+.selected-image-preview { display: grid; place-items: center; width: 108px; height: 108px; overflow: hidden; background: var(--brand-soft); border: 1px solid var(--line); border-radius: 12px; font-size: 40px; }
+.selected-image-preview img { width: 100%; height: 100%; object-fit: cover; }
+.image-editor-copy { min-width: 0; display: grid; gap: 5px; }
+.image-editor-copy > span { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.image-editor-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 7px; }
+.image-editor-actions button { min-height: 36px; padding: 7px 11px; }
+.text-danger { min-height: 36px; padding: 7px 4px; color: var(--danger); background: transparent; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.wide-dialog { width: min(980px, calc(100% - 24px)); }
+.crop-dialog { width: min(760px, calc(100% - 24px)); }
+.image-library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 11px; min-height: 180px; margin-top: 14px; }
+.image-library-item { display: grid; gap: 8px; padding: 8px; color: var(--ink); background: #fff; border: 2px solid var(--line); border-radius: 12px; text-align: left; cursor: pointer; }
+.image-library-item:hover, .image-library-item.selected { border-color: var(--brand); background: var(--brand-soft); }
+.image-library-item img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #fff; border-radius: 8px; }
+.image-library-item span { display: grid; min-width: 0; gap: 3px; }
+.image-library-item strong, .image-library-item small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.image-library-item small { color: var(--muted); }
+.crop-workspace { width: min(100%, 560px); margin: 0 auto; padding: 10px; background: #dfe6ea; border-radius: 14px; touch-action: none; }
+#cropCanvas { display: block; width: 100%; aspect-ratio: 1; background: #fff; border-radius: 9px; cursor: grab; touch-action: none; user-select: none; }
+#cropCanvas.dragging { cursor: grabbing; }
+.zoom-control { display: grid; grid-template-columns: auto minmax(0, 1fr) 54px; align-items: center; gap: 12px; margin-top: 14px; }
+.zoom-control span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.zoom-control input { width: 100%; }
+.zoom-control output { color: var(--brand-dark); font-variant-numeric: tabular-nums; text-align: right; }
+.split-actions { display: grid; grid-template-columns: auto 1fr auto auto; }
+@media (max-width: 650px) {
+  .image-editor-row { grid-template-columns: 82px minmax(0, 1fr); }
+  .selected-image-preview { width: 82px; height: 82px; }
+  .image-editor-actions { grid-column: 1 / -1; }
+  .image-library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .split-actions { grid-template-columns: 1fr 1fr; }
+  .split-actions span { display: none; }
+}
+
+#productDialog .dialog-body, .wide-dialog .dialog-body, .crop-dialog .dialog-body { max-height: 90vh; overflow-y: auto; }
