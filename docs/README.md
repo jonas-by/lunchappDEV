@@ -1,21 +1,23 @@
-# LunchApp Documentation Package
+# LunchApp / Cafe Kiosk documentation
 
-Documentation snapshot for work completed on **2026-10-05**.
+This documentation package records the image-library work completed on 2026-10-06.
 
-## Contents
+## Documents
 
-- `CHANGELOG-2026-10-05.md`: concise list of completed changes.
-- `FRONTEND-AND-API-CHANGES-2026-10-05.md`: detailed frontend and API implementation notes.
-- `DATABASE-CHANGES-2026-10-05.md`: database changes, views, constraints, indexes, and pricing model.
-- `ARCHITECTURE-AND-DECISIONS-2026-10-05.md`: design decisions and the reasoning behind them.
-- `TESTING-AND-VALIDATION-2026-10-05.md`: verified behavior and known limitations.
-- `HANDOVER-2026-10-05.md`: current project state and deployment-oriented handover.
-- `START-HERE-TOMORROW-2026-10-05.md`: recommended starting point for the next session.
+- `DAILY-DOCUMENTATION-2026-10-06.md`: detailed technical record of database, Azure, API and frontend changes.
+- `HANDOVER-2026-10-06.md`: current state, deployed components, decisions, cautions and backlog.
+- `START-HERE-TOMORROW-2026-10-06.md`: shortest practical restart path for the next session.
 
-## Current headline state
+## Scope completed today
 
-External users can order meals and salads, their orders appear in kitchen views and lunch reports, and external lunch charges affect prepaid, postpaid, and invoice account balances using an effective-dated lunch price. Employee payroll lunch reporting and manual post-deadline lunch additions are also available.
+A complete Cafe Kiosk product-image workflow was implemented:
 
-## Repository note
+1. Generic SQL image-asset metadata with a nullable product reference.
+2. Private Azure Blob Storage container and Function App configuration.
+3. Node.js Azure Functions image API.
+4. Product Library upload, crop, reuse and assignment UI.
+5. Cafe Kiosk image rendering with icon fallback.
+6. Dedicated Image Library page with safe deletion of unused assets.
+7. Admin landing-page navigation update.
 
-This package is documentation only. The repository remains the source of truth for deployed code. Update the repository root `README.md` from this package as appropriate rather than replacing it blindly.
+The authoritative working method remains: generate and deploy complete replacement files rather than applying manual snippets.
