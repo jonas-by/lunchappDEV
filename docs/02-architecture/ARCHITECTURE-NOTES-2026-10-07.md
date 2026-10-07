@@ -1,4 +1,4 @@
-# Architecture Notes 2026-10-06
+# Architecture Notes 2026-10-07
 
 ## External account and card ownership
 
@@ -86,3 +86,4 @@ A same-origin `postMessage` signals successful save from `/user/` to the kiosk s
 - Planned future rename: `/bulla/` to `/cafe/`
 
 Path cleanup is deliberately deferred until current flows are stable.
+

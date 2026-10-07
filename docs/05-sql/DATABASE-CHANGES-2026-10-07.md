@@ -1,4 +1,4 @@
-# Database Changes 2026-10-06
+# Database Changes 2026-10-07
 
 ## Columns added
 
@@ -113,3 +113,4 @@ The view remains unchanged during this session.
 ## Historical data decision
 
 No automatic backfill was performed for historical external order rows where CardID is NULL. Assigning an arbitrary card would create false traceability.
+

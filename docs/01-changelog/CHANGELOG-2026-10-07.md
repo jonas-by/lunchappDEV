@@ -1,4 +1,4 @@
-# Changelog 2026-10-06
+# Changelog 2026-10-07
 
 ## Added
 
@@ -40,3 +40,4 @@
 - Rename `/bulla/` to `/cafe/`.
 - Admin directory cleanup.
 - Entra ID and role-based authorization.
+

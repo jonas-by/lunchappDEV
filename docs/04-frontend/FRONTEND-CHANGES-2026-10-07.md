@@ -1,4 +1,4 @@
-# Frontend Changes 2026-10-06
+# Frontend Changes 2026-10-07
 
 ## `/lunchkiosk/card-login.js`
 
@@ -53,3 +53,4 @@ Some ZIP packages included complete companion files such as `order.html`, `bulla
 
 - Reduce the image size in the Café Kiosk product edit dialog in `kiosk-products-admin.html`.
 - Preserve aspect ratio and prevent the image from dominating the edit form.
+
