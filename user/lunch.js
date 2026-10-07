@@ -7,13 +7,14 @@ try { currentUser = JSON.parse(localStorage.getItem(USER_KEY)); } catch {}
 const ownerType = currentUser?.ownerType === 'external' ? 'external' : 'employee';
 const employeeNumber = Number(currentUser?.employeeNumber || currentUser?.employeeNo);
 const externalAccountId = Number(currentUser?.externalAccountId);
-const ownerValid = ownerType === 'external' ? externalAccountId > 0 : employeeNumber > 0;
+const cardId = Number(currentUser?.cardId);
+const ownerValid = ownerType === 'external' ? externalAccountId > 0 && cardId > 0 : employeeNumber > 0;
 if (!ownerValid) location.replace('login.html');
 
 const isGuest = document.body.dataset.orderType === 'guest';
 if (isGuest && ownerType === 'external') location.replace('index.html');
 const ownerParams = () => ownerType === 'external' ? { externalAccountId: String(externalAccountId) } : { employeeNo: String(employeeNumber) };
-const ownerBody = () => ownerType === 'external' ? { externalAccountId } : { employeeNo: employeeNumber };
+const ownerBody = () => ownerType === 'external' ? { externalAccountId, cardId } : { employeeNo: employeeNumber };
 let language = localStorage.getItem(LANGUAGE_KEY) || 'en';
 let menuWeeksByMonday = new Map();
 let menuCycleNames = new Set();
