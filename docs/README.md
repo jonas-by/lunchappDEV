@@ -1,23 +1,45 @@
-# LunchApp / Cafe Kiosk documentation
+# LunchApp Documentation
 
-This documentation package records the image-library work completed on 2026-10-06.
+This package documents the LunchApp, Lunch Kiosk, Kitchen, and Café Kiosk work completed during the session recorded as **2026-10-06**.
 
-## Documents
+## Folder structure
 
-- `DAILY-DOCUMENTATION-2026-10-06.md`: detailed technical record of database, Azure, API and frontend changes.
-- `HANDOVER-2026-10-06.md`: current state, deployed components, decisions, cautions and backlog.
-- `START-HERE-TOMORROW-2026-10-06.md`: shortest practical restart path for the next session.
+```text
+00-overview/
+01-changelog/
+02-architecture/
+03-api/
+04-frontend/
+05-sql/
+06-testing/
+07-handover/
+```
 
-## Scope completed today
+## Session outcome
 
-A complete Cafe Kiosk product-image workflow was implemented:
+The work completed the high-priority CardID architecture for external lunch ordering, restored and improved external account information in the Café Kiosk, and added funds and credit enforcement for café purchases.
 
-1. Generic SQL image-asset metadata with a nullable product reference.
-2. Private Azure Blob Storage container and Function App configuration.
-3. Node.js Azure Functions image API.
-4. Product Library upload, crop, reuse and assignment UI.
-5. Cafe Kiosk image rendering with icon fallback.
-6. Dedicated Image Library page with safe deletion of unused assets.
-7. Admin landing-page navigation update.
+Key results:
 
-The authoritative working method remains: generate and deploy complete replacement files rather than applying manual snippets.
+- External lunch and salad orders now identify the exact card used.
+- Multiple cards belonging to one external account have separate editable order views.
+- The Lunch Kiosk logs out immediately after a successful save.
+- Kitchen staff see the exact external cardholder and the last five digits of the card number.
+- Café Kiosk users see prepaid balance or remaining credit.
+- Café purchases are blocked when prepaid funds or postpaid/invoice credit are insufficient.
+- The shared external account ledger and balance view remain the authoritative financial source.
+
+## Important paths
+
+- General administration frontend: `/admin/`
+- Café kiosk administration frontend: `/admin/kioskadmin/`
+- Lunch kiosk shell: `/lunchkiosk/`
+- Shared employee/external lunch-ordering frontend: `/user/`
+- Café kiosk frontend: `/bulla/`
+- API source: `/api/`
+
+## Naming cleanup backlog
+
+- Rename `/bulla/` to `/cafe/` later.
+- Review the split between `/admin/` and `/admin/kioskadmin/` later.
+- Do not perform either cleanup while financial and ordering functionality is still being stabilized.
