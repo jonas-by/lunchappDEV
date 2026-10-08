@@ -21,7 +21,7 @@
         <option value="sv">SV</option>
         <option value="fi">FI</option>
       </select>
-      <button id="newAccount" class="primary header-action-button" type="button">+ New account</button>
+      <button id="newAccount" class="header-link header-action-button" type="button">New account</button>
     </header>
 
     <main class="kiosk-admin-main">
@@ -75,7 +75,13 @@
         <label class="field"><span>Valid from</span><input id="validFrom" type="date"></label>
         <label class="field"><span>Valid until</span><input id="validUntil" type="date"></label>
         <label class="field full"><span>Notes</span><textarea id="notes" maxlength="1000"></textarea></label>
-        <label class="admin-toggle full"><input id="accountActive" type="checkbox" checked><span>Active</span></label>
+        <div class="toggle-field full">
+          <span>Active</span>
+          <label class="switch" for="accountActive">
+            <input id="accountActive" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
         <section id="initialCardSection" class="initial-card-section full">
           <label class="admin-toggle initial-card-toggle"><input id="createInitialCard" type="checkbox" checked><span>Create and link an initial card</span></label>
           <div id="initialCardFields" class="initial-card-grid">
