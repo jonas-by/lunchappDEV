@@ -170,14 +170,3 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 
 
 .action-column{white-space:nowrap}.icon-action{min-width:38px;width:38px;padding:8px 0;text-align:center;font-size:16px}.lunch-action{background:#e6f0fb;color:#155b87}.edit-action{background:#eef2f7}.disable-action{background:#fef2f2}.restore-action{background:#ecfdf5}
-
-/* Employee dialog Active switch */
-.toggle-field.employee-dialog-active{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:14px;padding:12px 14px;background:#f7f9fa;border:1px solid var(--line);border-radius:11px;box-sizing:border-box}
-.toggle-field.employee-dialog-active>span{font-weight:700}
-.switch{position:relative;display:inline-block;flex:0 0 auto;width:44px;height:24px}
-.switch input{width:0!important;height:0!important;margin:0!important;opacity:0}
-.switch .slider{position:absolute;inset:0;cursor:pointer;background:#c8d0d6;border-radius:999px;transition:.2s}
-.switch .slider:before{position:absolute;content:"";width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-.switch input:checked+.slider{background:#2f7d4a}
-.switch input:checked+.slider:before{transform:translateX(20px)}
-.switch input:focus-visible+.slider{outline:2px solid var(--brand);outline-offset:2px}
