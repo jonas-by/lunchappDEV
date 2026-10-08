@@ -64,8 +64,8 @@ function productCard(product) {
 }
 async function loadProducts(){ showStatus(t().loading,'loading'); try{ products=await api(`${PRODUCT_API}?includeInactive=${showInactive.checked}`); clearStatus(); render(); }catch(error){ showStatus(error.message,'error'); } }
 
-function openNewProduct(){ fillForm(); productDialogTitle.textContent=t().dialogNew; productDialog.showModal(); nameEn.focus(); }
-function openEditProduct(product){ fillForm(product); productDialogTitle.textContent=t().dialogEdit; productDialog.showModal(); nameEn.focus(); }
+function openNewProduct(){ fillForm(); productDialogTitle.textContent=t().dialogNew; productDialog.showModal(); nameSv.focus(); }
+function openEditProduct(product){ fillForm(product); productDialogTitle.textContent=t().dialogEdit; productDialog.showModal(); nameSv.focus(); }
 function fillForm(product={}){
   productId.value=product.productId||''; nameEn.value=product.nameEn||''; nameSv.value=product.nameSv||''; nameFi.value=product.nameFi||''; price.value=product.price==null?'':Number(product.price).toFixed(2); icon.value=product.icon||''; productActive.checked=product.active!==false;
   legacyImageUrl.value=product.legacyImageUrl||(!product.imageAssetId?product.imageUrl||'':'');
