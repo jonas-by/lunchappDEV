@@ -170,3 +170,27 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 
 
 .action-column{white-space:nowrap}.icon-action{min-width:38px;width:38px;padding:8px 0;text-align:center;font-size:16px}.lunch-action{background:#e6f0fb;color:#155b87}.edit-action{background:#eef2f7}.disable-action{background:#fef2f2}.restore-action{background:#ecfdf5}
+
+/* Employee admin: scoped dialog toggle and compact table layout */
+.employee-active-field{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:14px;padding:12px 14px;background:#f7f9fa;border:1px solid var(--line);border-radius:11px}
+.employee-active-field>span{font-size:12px;font-weight:800}
+.employee-active-switch{position:relative;display:inline-block!important;width:44px;height:24px;margin:0!important;cursor:pointer}
+.employee-active-switch input{position:absolute;width:1px!important;height:1px!important;margin:0!important;opacity:0}
+.employee-active-slider{position:absolute;inset:0;background:#c8d0d6;border-radius:999px;transition:.2s}
+.employee-active-slider:before{position:absolute;content:"";width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.employee-active-switch input:checked+.employee-active-slider{background:#2f7d4a}
+.employee-active-switch input:checked+.employee-active-slider:before{transform:translateX(20px)}
+.employee-active-switch input:focus-visible+.employee-active-slider{outline:2px solid var(--brand);outline-offset:2px}
+.employee-table{table-layout:fixed}
+.employee-table th,.employee-table td{padding-left:12px;padding-right:12px;overflow-wrap:anywhere}
+.employee-table th:nth-child(1){width:18%}
+.employee-table th:nth-child(2){width:16%}
+.employee-table th:nth-child(3){width:30%}
+.employee-table th:nth-child(4){width:15%}
+.employee-table th:nth-child(5){width:9%}
+.employee-table th:nth-child(6){width:12%}
+.employee-table td.action-column,.employee-table th.action-column{white-space:nowrap;text-align:right}
+.employee-table td.action-column{padding-left:6px;padding-right:8px}
+.employee-table td.action-column .table-action{margin-left:2px}
+@media(max-width:650px){.employee-table{table-layout:auto}.employee-table th,.employee-table td{overflow-wrap:normal}.employee-table th:nth-child(n){width:auto}}
+

@@ -106,10 +106,13 @@
                 Card number
                 <input id="editCard" maxlength="50" autocomplete="off">
             </label>
-            <label class="active-toggle employee-dialog-active">
-                <input id="editActive" type="checkbox" checked>
+            <div class="employee-active-field">
                 <span>Active</span>
-            </label>
+                <label class="employee-active-switch" for="editActive">
+                    <input id="editActive" type="checkbox" checked>
+                    <span class="employee-active-slider"></span>
+                </label>
+            </div>
 
             <div id="employeeFormError" class="employee-form-error" role="alert" aria-live="assertive" hidden></div>
 
