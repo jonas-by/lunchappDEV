@@ -42,7 +42,13 @@
         <label class="field full"><span id="externalAccountLabel">External account</span><select id="externalAccountId" required></select></label>
         <label class="field"><span id="validFromLabel">Valid from</span><input id="validFrom" type="datetime-local"></label>
         <label class="field"><span id="validUntilLabel">Valid until</span><input id="validUntil" type="datetime-local"></label>
-        <label class="admin-toggle full"><input id="cardActive" type="checkbox" checked><span id="activeLabel">Active</span></label>
+        <div class="toggle-field full">
+          <span id="activeLabel">Active</span>
+          <label class="switch" for="cardActive">
+            <input id="cardActive" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
       </div>
       <div class="dialog-actions"><button id="cancelButton" type="button" class="secondary" data-close="cardDialog">Cancel</button><button id="saveButton" type="submit" class="primary">Save</button></div>
     </form>
