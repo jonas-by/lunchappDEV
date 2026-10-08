@@ -1,0 +1,37 @@
+[
+  {
+    "administratorLogin": "sqladmin",
+    "administratorLoginPassword": null,
+    "administrators": {
+      "administratorType": "ActiveDirectory",
+      "azureAdOnlyAuthentication": false,
+      "login": "jonas.westerlund@balticyachts.fi",
+      "principalType": "User",
+      "sid": "83ce14d7-8af7-4cc0-b61c-488a7034c13b",
+      "tenantId": "c688cbe2-a941-44fe-9396-c83c2ebaa71e"
+    },
+    "createMode": null,
+    "externalGovernanceStatus": "Disabled",
+    "federatedClientId": null,
+    "fullyQualifiedDomainName": "lunchappsql.database.windows.net",
+    "id": "/subscriptions/2f77b90e-2847-48ef-9c72-12733de874dc/resourceGroups/lunchapp/providers/Microsoft.Sql/servers/lunchappsql",
+    "identity": null,
+    "isIPv6Enabled": null,
+    "keyId": null,
+    "kind": "v12.0",
+    "location": "swedencentral",
+    "minimalTlsVersion": "1.2",
+    "name": "lunchappsql",
+    "primaryUserAssignedIdentityId": null,
+    "privateEndpointConnections": [],
+    "publicNetworkAccess": "Enabled",
+    "resourceGroup": "lunchapp",
+    "restrictOutboundNetworkAccess": "Disabled",
+    "retentionDays": -1,
+    "state": "Ready",
+    "tags": {},
+    "type": "Microsoft.Sql/servers",
+    "version": "12.0",
+    "workspaceFeature": null
+  }
+]

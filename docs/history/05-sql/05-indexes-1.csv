@@ -1,0 +1,68 @@
+﻿dbo;Balances;1;PK__Balances__7AD0F1B69286B922;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;DayMeals;1;PK_DayMeals;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;DayMeals;2;UQ_DayMeals_Day_Meal;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;Employees;1;PK__Employee__7AD0F1B670ECEDB0;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;Employees;4;UX_Employees_CardNumber;NONCLUSTERED;1;0;0;1;([CardNumber] IS NOT NULL);0;0
+dbo;ExternalAccountLedger;1;PK_ExternalAccountLedger;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;ExternalAccountLedger;2;IX_ExternalAccountLedger_AccountTime;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;ExternalAccountLedger;3;IX_ExternalAccountLedger_SaleID;NONCLUSTERED;0;0;0;1;([SaleID] IS NOT NULL);0;0
+dbo;ExternalAccountLedger;4;UX_ExternalAccountLedger_PurchaseSale;NONCLUSTERED;1;0;0;1;([EntryType]=N'Purchase' AND [SaleID] IS NOT NULL);0;0
+dbo;ExternalAccountLedger;5;UX_ExternalAccountLedger_ReversesEntry;NONCLUSTERED;1;0;0;1;([ReversesLedgerEntryID] IS NOT NULL);0;0
+dbo;ExternalAccounts;1;PK_ExternalAccounts;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;ExternalAccounts;2;IX_ExternalAccounts_ActiveMode;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;ExternalLunchPrices;1;PK_ExternalLunchPrices;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;ExternalLunchPrices;2;UQ_ExternalLunchPrices_ValidFrom;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;GuestOrders;1;PK__GuestOrd__773A898A08AB97EF;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;GuestSaladOrders;1;PK_GuestSaladOrders;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;GuestSaladOrders;2;UQ_GuestSaladOrders_HostDateSalad;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;GuestSaladOrders;3;IX_GuestSaladOrders_Date;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;ImageAssets;1;PK__ImageAss__16EED56DA638C083;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskCards;1;PK_KioskCards;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskCards;2;UQ_KioskCards_CardNumber;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;KioskCards;3;IX_KioskCards_EmployeeNo;NONCLUSTERED;0;0;0;1;([EmployeeNo] IS NOT NULL);0;0
+dbo;KioskCards;4;IX_KioskCards_ExternalAccountID;NONCLUSTERED;0;0;0;1;([ExternalAccountID] IS NOT NULL);0;0
+dbo;KioskCards;5;IX_KioskCards_ActiveValidity;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;KioskLayoutItems;1;PK_KioskLayoutItems;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskLayoutItems;2;UQ_KioskLayoutItems_Position;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;KioskLayoutItems;3;UQ_KioskLayoutItems_Product;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;KioskLayouts;1;PK_KioskLayouts;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskLayouts;2;UQ_KioskLayouts_LayoutName;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;KioskLayouts;3;UX_KioskLayouts_OneDefault;NONCLUSTERED;1;0;0;1;([IsDefault]=(1));0;0
+dbo;KioskProducts;1;PK__KioskPro__B40CC6EDFBBB280B;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskSaleLines;1;PK_KioskSaleLines;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskSaleLines;2;IX_KioskSaleLines_SaleID;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;KioskSaleLines;3;IX_KioskSaleLines_ProductID;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;KioskSales;1;PK_KioskSales;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;KioskSales;2;IX_KioskSales_SaleTime;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;KioskSales;3;IX_KioskSales_EmployeeNo;NONCLUSTERED;0;0;0;1;([EmployeeNo] IS NOT NULL);0;0
+dbo;KioskSales;4;IX_KioskSales_ExternalAccountID;NONCLUSTERED;0;0;0;1;([ExternalAccountID] IS NOT NULL);0;0
+dbo;KioskSales;5;UX_KioskSales_RequestID;NONCLUSTERED;1;0;0;1;([RequestID] IS NOT NULL);0;0
+dbo;KioskTransactions;1;PK__KioskTra__55433A4B01D2A8D1;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;ManualLunchAdjustments;1;PK_ManualLunchAdjustments;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;ManualLunchAdjustments;2;IX_ManualLunchAdjustments_MenuDate_EmployeeNo;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;Meals;1;PK__Meals__ACF6A65D46AC5673;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;Menu;1;PK__Menu__C99ED2500D83E658;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;MenuCycles;1;PK_MenuCycles;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;MenuCycles;2;IX_MenuCycles_Status_StartDate;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;MenuDays;1;PK_MenuDays;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;MenuDays;2;UQ_MenuDays_Week_Day;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;MenuWeeks;1;PK_MenuWeeks;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;MenuWeeks;2;UQ_MenuWeeks_Cycle_Week;NONCLUSTERED;1;0;1;0;NULL;0;0
+dbo;MenuWeeks;4;IX_MenuWeeks_MenuCycleID;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;OrderCancellations;1;PK_OrderCancellations;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;OrderCancellations;2;IX_OrderCancellations_OrderID;NONCLUSTERED;0;0;0;1;([OrderID] IS NOT NULL);0;0
+dbo;OrderCancellations;3;IX_OrderCancellations_GuestOrderID;NONCLUSTERED;0;0;0;1;([GuestOrderID] IS NOT NULL);0;0
+dbo;OrderCancellations;4;IX_OrderCancellations_CancelledAt;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;OrderCancellations;5;IX_OrderCancellations_ReasonCode;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;Orders;1;PK_Orders_New;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;Orders;2;UX_Orders_Employee_Date_Meal;NONCLUSTERED;1;0;0;1;([EmployeeNo] IS NOT NULL);0;0
+dbo;Orders;6;UX_Orders_Card_Date_Meal;NONCLUSTERED;1;0;0;1;([CardID] IS NOT NULL);0;0
+dbo;SaladOrderCancellations;1;PK_SaladOrderCancellations;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;SaladOrderCancellations;2;IX_SaladOrderCancellations_Employee;NONCLUSTERED;0;0;0;1;([SaladOrderID] IS NOT NULL);0;0
+dbo;SaladOrderCancellations;3;IX_SaladOrderCancellations_Guest;NONCLUSTERED;0;0;0;1;([GuestSaladOrderID] IS NOT NULL);0;0
+dbo;SaladOrders;1;PK_SaladOrders;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;SaladOrders;2;UX_SaladOrders_Employee_Date_Salad;NONCLUSTERED;1;0;0;1;([EmployeeNo] IS NOT NULL);0;0
+dbo;SaladOrders;3;IX_SaladOrders_Date;NONCLUSTERED;0;0;0;0;NULL;0;0
+dbo;SaladOrders;6;UX_SaladOrders_Card_Date_Salad;NONCLUSTERED;1;0;0;1;([CardID] IS NOT NULL);0;0
+dbo;Salads;1;PK_Salads;CLUSTERED;1;1;0;0;NULL;0;0
+dbo;Salads;2;IX_Salads_ActiveSort;NONCLUSTERED;0;0;0;0;NULL;0;0

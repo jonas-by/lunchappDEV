@@ -1,0 +1,312 @@
+[
+  {
+    "accessTier": "Hot",
+    "accountMigrationInProgress": null,
+    "allowBlobPublicAccess": false,
+    "allowCrossTenantReplication": false,
+    "allowSharedKeyAccess": true,
+    "allowSharedKeyAccessForServices": null,
+    "allowedCopyScope": null,
+    "azureFilesIdentityBasedAuthentication": null,
+    "blobRestoreStatus": null,
+    "creationTime": "2026-09-25T07:54:38.990834+00:00",
+    "customDomain": null,
+    "dataCollaborationPolicyProperties": null,
+    "defaultToOAuthAuthentication": true,
+    "dnsEndpointType": null,
+    "dualStackEndpointPreference": null,
+    "enableExtendedGroups": null,
+    "enableHttpsTrafficOnly": true,
+    "enableNfsV3": null,
+    "encryption": {
+      "encryptionIdentity": null,
+      "keySource": "Microsoft.Storage",
+      "keyVaultProperties": null,
+      "requireInfrastructureEncryption": null,
+      "services": {
+        "blob": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-09-25T07:54:39.126595+00:00"
+        },
+        "file": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-09-25T07:54:39.126595+00:00"
+        },
+        "queue": null,
+        "table": null
+      }
+    },
+    "extendedLocation": null,
+    "failoverInProgress": null,
+    "geoPriorityReplicationStatus": null,
+    "geoReplicationStats": null,
+    "id": "/subscriptions/2f77b90e-2847-48ef-9c72-12733de874dc/resourceGroups/lunchapp/providers/Microsoft.Storage/storageAccounts/lunchappafa5",
+    "identity": null,
+    "immutableStorageWithVersioning": null,
+    "isHnsEnabled": null,
+    "isLocalUserEnabled": null,
+    "isSftpEnabled": null,
+    "isSkuConversionBlocked": null,
+    "keyCreationTime": {
+      "key1": "2026-09-25T07:54:39.118517+00:00",
+      "key2": "2026-09-25T07:54:39.118517+00:00"
+    },
+    "keyPolicy": null,
+    "kind": "StorageV2",
+    "largeFileSharesState": null,
+    "lastGeoFailoverTime": null,
+    "location": "swedencentral",
+    "minimumTlsVersion": "TLS1_2",
+    "name": "lunchappafa5",
+    "networkRuleSet": {
+      "bypass": "None",
+      "defaultAction": "Allow",
+      "ipRules": [],
+      "ipv6Rules": [],
+      "resourceAccessRules": null,
+      "virtualNetworkRules": []
+    },
+    "placement": null,
+    "primaryEndpoints": {
+      "blob": "https://lunchappafa5.blob.core.windows.net/",
+      "dfs": "https://lunchappafa5.dfs.core.windows.net/",
+      "file": "https://lunchappafa5.file.core.windows.net/",
+      "internetEndpoints": null,
+      "ipv6Endpoints": null,
+      "microsoftEndpoints": null,
+      "queue": "https://lunchappafa5.queue.core.windows.net/",
+      "table": "https://lunchappafa5.table.core.windows.net/",
+      "web": "https://lunchappafa5.z1.web.core.windows.net/"
+    },
+    "primaryLocation": "swedencentral",
+    "privateEndpointConnections": [],
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": "Enabled",
+    "resourceGroup": "lunchapp",
+    "routingPreference": null,
+    "sasPolicy": null,
+    "secondaryEndpoints": null,
+    "secondaryLocation": null,
+    "sku": {
+      "name": "Standard_LRS",
+      "tier": "Standard"
+    },
+    "statusOfPrimary": "available",
+    "statusOfSecondary": null,
+    "storageAccountSkuConversionStatus": null,
+    "systemData": null,
+    "tags": {},
+    "type": "Microsoft.Storage/storageAccounts",
+    "zones": null
+  },
+  {
+    "accessTier": "Hot",
+    "accountMigrationInProgress": null,
+    "allowBlobPublicAccess": false,
+    "allowCrossTenantReplication": false,
+    "allowSharedKeyAccess": true,
+    "allowSharedKeyAccessForServices": null,
+    "allowedCopyScope": null,
+    "azureFilesIdentityBasedAuthentication": null,
+    "blobRestoreStatus": null,
+    "creationTime": "2026-10-06T11:30:22.141438+00:00",
+    "customDomain": null,
+    "dataCollaborationPolicyProperties": null,
+    "defaultToOAuthAuthentication": false,
+    "dnsEndpointType": "Standard",
+    "dualStackEndpointPreference": {
+      "publishIpv6Endpoint": false
+    },
+    "enableExtendedGroups": null,
+    "enableHttpsTrafficOnly": true,
+    "enableNfsV3": null,
+    "encryption": {
+      "encryptionIdentity": null,
+      "keySource": "Microsoft.Storage",
+      "keyVaultProperties": null,
+      "requireInfrastructureEncryption": false,
+      "services": {
+        "blob": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-10-06T11:30:22.273859+00:00"
+        },
+        "file": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-10-06T11:30:22.273859+00:00"
+        },
+        "queue": null,
+        "table": null
+      }
+    },
+    "extendedLocation": null,
+    "failoverInProgress": null,
+    "geoPriorityReplicationStatus": null,
+    "geoReplicationStats": null,
+    "id": "/subscriptions/2f77b90e-2847-48ef-9c72-12733de874dc/resourceGroups/lunchapp/providers/Microsoft.Storage/storageAccounts/lunchappdevstorage",
+    "identity": null,
+    "immutableStorageWithVersioning": null,
+    "isHnsEnabled": null,
+    "isLocalUserEnabled": null,
+    "isSftpEnabled": null,
+    "isSkuConversionBlocked": null,
+    "keyCreationTime": {
+      "key1": "2026-10-06T11:30:22.266769+00:00",
+      "key2": "2026-10-06T11:30:22.266769+00:00"
+    },
+    "keyPolicy": null,
+    "kind": "StorageV2",
+    "largeFileSharesState": null,
+    "lastGeoFailoverTime": null,
+    "location": "swedencentral",
+    "minimumTlsVersion": "TLS1_2",
+    "name": "lunchappdevstorage",
+    "networkRuleSet": {
+      "bypass": "AzureServices",
+      "defaultAction": "Allow",
+      "ipRules": [],
+      "ipv6Rules": [],
+      "resourceAccessRules": null,
+      "virtualNetworkRules": []
+    },
+    "placement": null,
+    "primaryEndpoints": {
+      "blob": "https://lunchappdevstorage.blob.core.windows.net/",
+      "dfs": "https://lunchappdevstorage.dfs.core.windows.net/",
+      "file": "https://lunchappdevstorage.file.core.windows.net/",
+      "internetEndpoints": null,
+      "ipv6Endpoints": null,
+      "microsoftEndpoints": null,
+      "queue": "https://lunchappdevstorage.queue.core.windows.net/",
+      "table": "https://lunchappdevstorage.table.core.windows.net/",
+      "web": "https://lunchappdevstorage.z1.web.core.windows.net/"
+    },
+    "primaryLocation": "swedencentral",
+    "privateEndpointConnections": [],
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": "Enabled",
+    "resourceGroup": "lunchapp",
+    "routingPreference": null,
+    "sasPolicy": null,
+    "secondaryEndpoints": null,
+    "secondaryLocation": null,
+    "sku": {
+      "name": "Standard_LRS",
+      "tier": "Standard"
+    },
+    "statusOfPrimary": "available",
+    "statusOfSecondary": null,
+    "storageAccountSkuConversionStatus": null,
+    "systemData": null,
+    "tags": {},
+    "type": "Microsoft.Storage/storageAccounts",
+    "zones": null
+  },
+  {
+    "accessTier": "Hot",
+    "accountMigrationInProgress": null,
+    "allowBlobPublicAccess": false,
+    "allowCrossTenantReplication": false,
+    "allowSharedKeyAccess": true,
+    "allowSharedKeyAccessForServices": null,
+    "allowedCopyScope": null,
+    "azureFilesIdentityBasedAuthentication": null,
+    "blobRestoreStatus": null,
+    "creationTime": "2026-09-24T09:42:52.418164+00:00",
+    "customDomain": null,
+    "dataCollaborationPolicyProperties": null,
+    "defaultToOAuthAuthentication": false,
+    "dnsEndpointType": "Standard",
+    "dualStackEndpointPreference": {
+      "publishIpv6Endpoint": false
+    },
+    "enableExtendedGroups": null,
+    "enableHttpsTrafficOnly": true,
+    "enableNfsV3": null,
+    "encryption": {
+      "encryptionIdentity": null,
+      "keySource": "Microsoft.Storage",
+      "keyVaultProperties": null,
+      "requireInfrastructureEncryption": false,
+      "services": {
+        "blob": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-09-24T09:42:52.545661+00:00"
+        },
+        "file": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2026-09-24T09:42:52.545661+00:00"
+        },
+        "queue": null,
+        "table": null
+      }
+    },
+    "extendedLocation": null,
+    "failoverInProgress": null,
+    "geoPriorityReplicationStatus": null,
+    "geoReplicationStats": null,
+    "id": "/subscriptions/2f77b90e-2847-48ef-9c72-12733de874dc/resourceGroups/lunchapp/providers/Microsoft.Storage/storageAccounts/lunchappstorage",
+    "identity": null,
+    "immutableStorageWithVersioning": null,
+    "isHnsEnabled": null,
+    "isLocalUserEnabled": null,
+    "isSftpEnabled": null,
+    "isSkuConversionBlocked": null,
+    "keyCreationTime": {
+      "key1": "2026-09-24T09:42:52.535554+00:00",
+      "key2": "2026-09-24T09:42:52.535554+00:00"
+    },
+    "keyPolicy": null,
+    "kind": "StorageV2",
+    "largeFileSharesState": null,
+    "lastGeoFailoverTime": null,
+    "location": "swedencentral",
+    "minimumTlsVersion": "TLS1_2",
+    "name": "lunchappstorage",
+    "networkRuleSet": {
+      "bypass": "AzureServices",
+      "defaultAction": "Allow",
+      "ipRules": [],
+      "ipv6Rules": [],
+      "resourceAccessRules": null,
+      "virtualNetworkRules": []
+    },
+    "placement": null,
+    "primaryEndpoints": {
+      "blob": "https://lunchappstorage.blob.core.windows.net/",
+      "dfs": "https://lunchappstorage.dfs.core.windows.net/",
+      "file": "https://lunchappstorage.file.core.windows.net/",
+      "internetEndpoints": null,
+      "ipv6Endpoints": null,
+      "microsoftEndpoints": null,
+      "queue": "https://lunchappstorage.queue.core.windows.net/",
+      "table": "https://lunchappstorage.table.core.windows.net/",
+      "web": "https://lunchappstorage.z1.web.core.windows.net/"
+    },
+    "primaryLocation": "swedencentral",
+    "privateEndpointConnections": [],
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": "Enabled",
+    "resourceGroup": "lunchapp",
+    "routingPreference": null,
+    "sasPolicy": null,
+    "secondaryEndpoints": null,
+    "secondaryLocation": null,
+    "sku": {
+      "name": "Standard_LRS",
+      "tier": "Standard"
+    },
+    "statusOfPrimary": "available",
+    "statusOfSecondary": null,
+    "storageAccountSkuConversionStatus": null,
+    "systemData": null,
+    "tags": {},
+    "type": "Microsoft.Storage/storageAccounts",
+    "zones": null
+  }
+]

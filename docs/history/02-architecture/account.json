@@ -1,0 +1,20 @@
+{
+  "environmentName": "AzureCloud",
+  "homeTenantId": "c688cbe2-a941-44fe-9396-c83c2ebaa71e",
+  "id": "2f77b90e-2847-48ef-9c72-12733de874dc",
+  "isDefault": true,
+  "managedByTenants": [
+    {
+      "tenantId": "14ec4bca-debf-47a0-816e-76e0b13a0e26"
+    }
+  ],
+  "name": "Baltic Yachts Azure",
+  "state": "Enabled",
+  "tenantDefaultDomain": "balticyachts.fi",
+  "tenantDisplayName": "Baltic Yachts",
+  "tenantId": "c688cbe2-a941-44fe-9396-c83c2ebaa71e",
+  "user": {
+    "name": "jonas.westerlund@balticyachts.fi",
+    "type": "user"
+  }
+}

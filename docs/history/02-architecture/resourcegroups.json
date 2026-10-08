@@ -1,0 +1,13 @@
+[
+  {
+    "id": "/subscriptions/2f77b90e-2847-48ef-9c72-12733de874dc/resourceGroups/lunchapp",
+    "location": "swedencentral",
+    "managedBy": null,
+    "name": "lunchapp",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {},
+    "type": "Microsoft.Resources/resourceGroups"
+  }
+]

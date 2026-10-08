@@ -1,0 +1,130 @@
+﻿dbo;Balances;PK__Balances__7AD0F1B69286B922;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;DayMeals;PK_DayMeals;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;DayMeals;UQ_DayMeals_Day_Meal;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;Employees;DF__Employees__Activ__0A9D95DB;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF__Employees__Activ__0A9D95DB;((1));Active
+dbo;Employees;PK__Employee__7AD0F1B670ECEDB0;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_Amount;CHECK_CONSTRAINT;NULL;([AmountCents]<>(0));0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_CreatedBy;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([CreatedBy])))>(0));0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_EntryType;CHECK_CONSTRAINT;NULL;([EntryType]=N'Reversal' OR [EntryType]=N'Adjustment' OR [EntryType]=N'Refund' OR [EntryType]=N'Credit' OR [EntryType]=N'Invoice' OR [EntryType]=N'Payment' OR [EntryType]=N'Purchase' OR [EntryType]=N'Prepayment');0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_NoSelfReversal;CHECK_CONSTRAINT;NULL;([ReversesLedgerEntryID] IS NULL OR [ReversesLedgerEntryID]<>[LedgerEntryID]);0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_PurchaseSale;CHECK_CONSTRAINT;NULL;([EntryType]<>N'Purchase' OR [SaleID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;CK_ExternalAccountLedger_ReversalLink;CHECK_CONSTRAINT;NULL;([EntryType]<>N'Reversal' OR [ReversesLedgerEntryID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;ExternalAccountLedger;DF_ExternalAccountLedger_EntryTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalAccountLedger_EntryTime;(sysutcdatetime());EntryTime
+dbo;ExternalAccountLedger;PK_ExternalAccountLedger;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;ExternalAccounts;CK_ExternalAccounts_AccountMode;CHECK_CONSTRAINT;NULL;([AccountMode]=N'Invoice' OR [AccountMode]=N'Postpaid' OR [AccountMode]=N'Prepaid');0;NULL;NULL;NULL
+dbo;ExternalAccounts;CK_ExternalAccounts_CreditLimit;CHECK_CONSTRAINT;NULL;([CreditLimitCents] IS NULL OR [CreditLimitCents]>=(0));0;NULL;NULL;NULL
+dbo;ExternalAccounts;CK_ExternalAccounts_DisplayName;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([DisplayName])))>(0));0;NULL;NULL;NULL
+dbo;ExternalAccounts;CK_ExternalAccounts_ModeCreditLimit;CHECK_CONSTRAINT;NULL;([AccountMode]<>N'Prepaid' OR [CreditLimitCents] IS NULL OR [CreditLimitCents]=(0));0;NULL;NULL;NULL
+dbo;ExternalAccounts;CK_ExternalAccounts_Validity;CHECK_CONSTRAINT;NULL;([ValidFrom] IS NULL OR [ValidUntil] IS NULL OR [ValidFrom]<=[ValidUntil]);0;NULL;NULL;NULL
+dbo;ExternalAccounts;DF_ExternalAccounts_BalanceCents;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalAccounts_BalanceCents;((0));BalanceCents
+dbo;ExternalAccounts;DF_ExternalAccounts_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalAccounts_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;ExternalAccounts;DF_ExternalAccounts_IsActive;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalAccounts_IsActive;((1));IsActive
+dbo;ExternalAccounts;DF_ExternalAccounts_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalAccounts_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;ExternalAccounts;PK_ExternalAccounts;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;ExternalLunchPrices;CK_ExternalLunchPrices_PriceCents;CHECK_CONSTRAINT;NULL;([PriceCents]>(0));0;NULL;NULL;NULL
+dbo;ExternalLunchPrices;DF_ExternalLunchPrices_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ExternalLunchPrices_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;ExternalLunchPrices;PK_ExternalLunchPrices;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;ExternalLunchPrices;UQ_ExternalLunchPrices_ValidFrom;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;GuestOrders;DF_GuestOrders_OrderTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_GuestOrders_OrderTime;(sysutcdatetime());OrderTime
+dbo;GuestOrders;PK__GuestOrd__773A898A08AB97EF;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;GuestSaladOrders;CK_GuestSaladOrders_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>=(1) AND [Quantity]<=(50));0;NULL;NULL;NULL
+dbo;GuestSaladOrders;DF_GuestSaladOrders_OrderTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_GuestSaladOrders_OrderTime;(sysutcdatetime());OrderTime
+dbo;GuestSaladOrders;PK_GuestSaladOrders;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;GuestSaladOrders;UQ_GuestSaladOrders_HostDateSalad;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;ImageAssets;DF__ImageAsse__Creat__6D6238AF;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF__ImageAsse__Creat__6D6238AF;(sysutcdatetime());CreatedAt
+dbo;ImageAssets;PK__ImageAss__16EED56DA638C083;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskCards;CK_KioskCards_CardNumber;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([CardNumber])))>(0));0;NULL;NULL;NULL
+dbo;KioskCards;CK_KioskCards_Owner;CHECK_CONSTRAINT;NULL;([OwnerType]=N'Employee' AND [EmployeeNo] IS NOT NULL AND [ExternalAccountID] IS NULL OR [OwnerType]=N'External' AND [EmployeeNo] IS NULL AND [ExternalAccountID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;KioskCards;CK_KioskCards_OwnerType;CHECK_CONSTRAINT;NULL;([OwnerType]=N'External' OR [OwnerType]=N'Employee');0;NULL;NULL;NULL
+dbo;KioskCards;CK_KioskCards_Validity;CHECK_CONSTRAINT;NULL;([ValidFrom] IS NULL OR [ValidUntil] IS NULL OR [ValidFrom]<=[ValidUntil]);0;NULL;NULL;NULL
+dbo;KioskCards;DF_KioskCards_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskCards_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;KioskCards;DF_KioskCards_IsActive;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskCards_IsActive;((1));IsActive
+dbo;KioskCards;DF_KioskCards_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskCards_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;KioskCards;PK_KioskCards;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskCards;UQ_KioskCards_CardNumber;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;KioskLayoutItems;CK_KioskLayoutItems_ColumnNo;CHECK_CONSTRAINT;NULL;([ColumnNo]=(2) OR [ColumnNo]=(1));0;NULL;NULL;NULL
+dbo;KioskLayoutItems;CK_KioskLayoutItems_RowNo;CHECK_CONSTRAINT;NULL;([RowNo]>=(1));0;NULL;NULL;NULL
+dbo;KioskLayoutItems;DF_KioskLayoutItems_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayoutItems_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;KioskLayoutItems;DF_KioskLayoutItems_IsVisible;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayoutItems_IsVisible;((1));IsVisible
+dbo;KioskLayoutItems;DF_KioskLayoutItems_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayoutItems_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;KioskLayoutItems;PK_KioskLayoutItems;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskLayoutItems;UQ_KioskLayoutItems_Position;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;KioskLayoutItems;UQ_KioskLayoutItems_Product;UNIQUE_CONSTRAINT;3;NULL;NULL;NULL;NULL;NULL
+dbo;KioskLayouts;CK_KioskLayouts_LayoutName;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([LayoutName])))>(0));0;NULL;NULL;NULL
+dbo;KioskLayouts;DF_KioskLayouts_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayouts_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;KioskLayouts;DF_KioskLayouts_IsActive;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayouts_IsActive;((1));IsActive
+dbo;KioskLayouts;DF_KioskLayouts_IsDefault;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayouts_IsDefault;((0));IsDefault
+dbo;KioskLayouts;DF_KioskLayouts_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskLayouts_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;KioskLayouts;PK_KioskLayouts;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskLayouts;UQ_KioskLayouts_LayoutName;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;KioskProducts;CK_KioskProducts_NameEN;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([NameEN])))>(0));0;NULL;NULL;NULL
+dbo;KioskProducts;CK_KioskProducts_Price;CHECK_CONSTRAINT;NULL;([Price]>=(0));0;NULL;NULL;NULL
+dbo;KioskProducts;DF__KioskProd__Activ__02084FDA;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF__KioskProd__Activ__02084FDA;((1));Active
+dbo;KioskProducts;DF_KioskProducts_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskProducts_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;KioskProducts;DF_KioskProducts_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskProducts_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;KioskProducts;PK__KioskPro__B40CC6EDFBBB280B;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskSaleLines;CK_KioskSaleLines_LineTotalCents;CHECK_CONSTRAINT;NULL;([LineTotalCents]=CONVERT([bigint],[UnitPriceCents])*[Quantity]);0;NULL;NULL;NULL
+dbo;KioskSaleLines;CK_KioskSaleLines_ProductName;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([ProductNameSnapshot])))>(0));0;NULL;NULL;NULL
+dbo;KioskSaleLines;CK_KioskSaleLines_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>=(1) AND [Quantity]<=(100));0;NULL;NULL;NULL
+dbo;KioskSaleLines;CK_KioskSaleLines_UnitPrice;CHECK_CONSTRAINT;NULL;([UnitPriceCents]>=(0));0;NULL;NULL;NULL
+dbo;KioskSaleLines;CK_KioskSaleLines_UnitPriceCents;CHECK_CONSTRAINT;NULL;([UnitPriceCents]>=(0));0;NULL;NULL;NULL
+dbo;KioskSaleLines;PK_KioskSaleLines;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_Owner;CHECK_CONSTRAINT;NULL;([OwnerType]=N'Employee' AND [EmployeeNo] IS NOT NULL AND [ExternalAccountID] IS NULL OR [OwnerType]=N'External' AND [EmployeeNo] IS NULL AND [ExternalAccountID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_OwnerReference;CHECK_CONSTRAINT;NULL;([OwnerType]=N'Employee' AND [EmployeeNo] IS NOT NULL AND [ExternalAccountID] IS NULL AND [CardID] IS NULL OR [OwnerType]=N'External' AND [EmployeeNo] IS NULL AND [ExternalAccountID] IS NOT NULL AND [CardID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_OwnerType;CHECK_CONSTRAINT;NULL;([OwnerType]=N'External' OR [OwnerType]=N'Employee');0;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_Status;CHECK_CONSTRAINT;NULL;([Status]=N'Refunded' OR [Status]=N'PartiallyRefunded' OR [Status]=N'Voided' OR [Status]=N'Completed');0;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_TotalCents;CHECK_CONSTRAINT;NULL;([TotalCents]>=(0));0;NULL;NULL;NULL
+dbo;KioskSales;CK_KioskSales_VoidFields;CHECK_CONSTRAINT;NULL;([Status]<>N'Voided' OR [VoidedAt] IS NOT NULL AND [VoidedBy] IS NOT NULL AND [VoidReason] IS NOT NULL);0;NULL;NULL;NULL
+dbo;KioskSales;DF_KioskSales_CreatedBy;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskSales_CreatedBy;(N'Kiosk');CreatedBy
+dbo;KioskSales;DF_KioskSales_SaleTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskSales_SaleTime;(sysutcdatetime());SaleTime
+dbo;KioskSales;DF_KioskSales_Status;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_KioskSales_Status;(N'Completed');Status
+dbo;KioskSales;PK_KioskSales;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;KioskTransactions;DF__KioskTran__Trans__04E4BC85;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF__KioskTran__Trans__04E4BC85;(getdate());TransactionTime
+dbo;KioskTransactions;PK__KioskTra__55433A4B01D2A8D1;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;ManualLunchAdjustments;CK_ManualLunchAdjustments_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>(0) AND [Quantity]<=(50));0;NULL;NULL;NULL
+dbo;ManualLunchAdjustments;DF_ManualLunchAdjustments_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ManualLunchAdjustments_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;ManualLunchAdjustments;DF_ManualLunchAdjustments_Quantity;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_ManualLunchAdjustments_Quantity;((1));Quantity
+dbo;ManualLunchAdjustments;PK_ManualLunchAdjustments;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;Meals;DF__Meals__Active__778AC167;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF__Meals__Active__778AC167;((1));Active
+dbo;Meals;DF_Meals_Category;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Meals_Category;('Main');Category
+dbo;Meals;PK__Meals__ACF6A65D46AC5673;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;Menu;PK__Menu__C99ED2500D83E658;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;MenuCycles;CK_MenuCycles_NumberOfWeeks;CHECK_CONSTRAINT;NULL;([NumberOfWeeks]>=(1) AND [NumberOfWeeks]<=(8));0;NULL;NULL;NULL
+dbo;MenuCycles;CK_MenuCycles_Status;CHECK_CONSTRAINT;NULL;([Status]=N'Archived' OR [Status]=N'Published' OR [Status]=N'Draft');0;NULL;NULL;NULL
+dbo;MenuCycles;DF_MenuCycles_CreatedDate;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_MenuCycles_CreatedDate;(sysutcdatetime());CreatedDate
+dbo;MenuCycles;DF_MenuCycles_Status;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_MenuCycles_Status;(N'Draft');Status
+dbo;MenuCycles;DF_MenuCycles_UpdatedDate;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_MenuCycles_UpdatedDate;(sysutcdatetime());UpdatedDate
+dbo;MenuCycles;PK_MenuCycles;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;MenuDays;CK_MenuDays_DayNumber;CHECK_CONSTRAINT;NULL;([DayNumber]>=(1) AND [DayNumber]<=(5));0;NULL;NULL;NULL
+dbo;MenuDays;PK_MenuDays;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;MenuDays;UQ_MenuDays_Week_Day;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;MenuWeeks;CK_MenuWeeks_WeekNumber;CHECK_CONSTRAINT;NULL;([WeekNumber]>=(1) AND [WeekNumber]<=(8));0;NULL;NULL;NULL
+dbo;MenuWeeks;DF_MenuWeeks_CreatedDate;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_MenuWeeks_CreatedDate;(sysutcdatetime());CreatedDate
+dbo;MenuWeeks;PK_MenuWeeks;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;MenuWeeks;UQ_MenuWeeks_Cycle_Week;UNIQUE_CONSTRAINT;2;NULL;NULL;NULL;NULL;NULL
+dbo;OrderCancellations;CK_OrderCancellations_OrderType;CHECK_CONSTRAINT;NULL;([OrderType]=N'Guest' OR [OrderType]=N'Employee');0;NULL;NULL;NULL
+dbo;OrderCancellations;CK_OrderCancellations_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>(0));0;NULL;NULL;NULL
+dbo;OrderCancellations;CK_OrderCancellations_ReasonCode;CHECK_CONSTRAINT;NULL;([ReasonCode]=N'OTHER' OR [ReasonCode]=N'KITCHEN_CORRECTION' OR [ReasonCode]=N'WRONG_DISH' OR [ReasonCode]=N'EMPLOYEE_ABSENT' OR [ReasonCode]=N'EMPLOYEE_REQUEST' OR [ReasonCode]=N'INSUFFICIENT_PORTIONS');0;NULL;NULL;NULL
+dbo;OrderCancellations;CK_OrderCancellations_Reference;CHECK_CONSTRAINT;NULL;([OrderType]=N'Employee' AND [OrderID] IS NOT NULL AND [GuestOrderID] IS NULL OR [OrderType]=N'Guest' AND [GuestOrderID] IS NOT NULL AND [OrderID] IS NULL);0;NULL;NULL;NULL
+dbo;OrderCancellations;DF_OrderCancellations_CancelledAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_OrderCancellations_CancelledAt;(sysutcdatetime());CancelledAt
+dbo;OrderCancellations;PK_OrderCancellations;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;Orders;CK_Orders_New_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>=(1) AND [Quantity]<=(50));0;NULL;NULL;NULL
+dbo;Orders;DF_Orders_New_OrderTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Orders_New_OrderTime;(sysutcdatetime());OrderTime
+dbo;Orders;PK_Orders_New;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;SaladOrderCancellations;CK_SaladOrderCancellations_OrderType;CHECK_CONSTRAINT;NULL;([OrderType]=N'Guest' OR [OrderType]=N'Employee');0;NULL;NULL;NULL
+dbo;SaladOrderCancellations;CK_SaladOrderCancellations_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>(0));0;NULL;NULL;NULL
+dbo;SaladOrderCancellations;CK_SaladOrderCancellations_Source;CHECK_CONSTRAINT;NULL;([OrderType]=N'Employee' AND [SaladOrderID] IS NOT NULL AND [GuestSaladOrderID] IS NULL OR [OrderType]=N'Guest' AND [SaladOrderID] IS NULL AND [GuestSaladOrderID] IS NOT NULL);0;NULL;NULL;NULL
+dbo;SaladOrderCancellations;DF_SaladOrderCancellations_CancelledAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_SaladOrderCancellations_CancelledAt;(sysutcdatetime());CancelledAt
+dbo;SaladOrderCancellations;PK_SaladOrderCancellations;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;SaladOrders;CK_SaladOrders_Quantity;CHECK_CONSTRAINT;NULL;([Quantity]>=(1) AND [Quantity]<=(50));0;NULL;NULL;NULL
+dbo;SaladOrders;DF_SaladOrders_OrderTime;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_SaladOrders_OrderTime;(sysutcdatetime());OrderTime
+dbo;SaladOrders;PK_SaladOrders;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
+dbo;Salads;CK_Salads_NameEn_NotBlank;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([NameEn])))>(0));0;NULL;NULL;NULL
+dbo;Salads;CK_Salads_NameFi_NotBlank;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([NameFi])))>(0));0;NULL;NULL;NULL
+dbo;Salads;CK_Salads_NameSv_NotBlank;CHECK_CONSTRAINT;NULL;(len(ltrim(rtrim([NameSv])))>(0));0;NULL;NULL;NULL
+dbo;Salads;CK_Salads_SortOrder_NonNegative;CHECK_CONSTRAINT;NULL;([SortOrder]>=(0));0;NULL;NULL;NULL
+dbo;Salads;DF_Salads_CreatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Salads_CreatedAt;(sysutcdatetime());CreatedAt
+dbo;Salads;DF_Salads_IsActive;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Salads_IsActive;((1));IsActive
+dbo;Salads;DF_Salads_SortOrder;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Salads_SortOrder;((0));SortOrder
+dbo;Salads;DF_Salads_UpdatedAt;DEFAULT_CONSTRAINT;NULL;NULL;NULL;DF_Salads_UpdatedAt;(sysutcdatetime());UpdatedAt
+dbo;Salads;PK_Salads;PRIMARY_KEY_CONSTRAINT;1;NULL;NULL;NULL;NULL;NULL
