@@ -194,3 +194,12 @@ main{width:min(100%,820px);margin:0 auto}.notice,.guest-banner{display:flex;alig
 .employee-table td.action-column .table-action{margin-left:2px}
 @media(max-width:650px){.employee-table{table-layout:auto}.employee-table th,.employee-table td{overflow-wrap:normal}.employee-table th:nth-child(n){width:auto}}
 
+
+/* Employee admin: remove desktop horizontal scrollbar without changing the Active toggle */
+.employee-list-panel .summary-table-wrap{max-width:100%;overflow-x:hidden}
+.employee-list-panel .employee-table{width:100%;min-width:0;table-layout:fixed}
+.employee-list-panel .employee-table th,.employee-list-panel .employee-table td{min-width:0}
+.employee-list-panel .employee-table td:not(.action-column){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.employee-list-panel .employee-table .action-column{width:112px;padding-left:4px;padding-right:6px;white-space:nowrap}
+.employee-list-panel .employee-table .action-column button{min-width:34px;width:34px;padding-left:0;padding-right:0}
+@media(max-width:650px){.employee-list-panel .summary-table-wrap{overflow-x:auto}.employee-list-panel .employee-table{min-width:760px;table-layout:auto}}
